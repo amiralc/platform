@@ -1,0 +1,128 @@
+<!-- Profile Header -->
+<div class="header bg-gradient-info pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">User Profile</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">Users</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Profile</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col-xl-4 order-xl-1">
+        <!-- User Card -->
+        <div class="card card-profile shadow">
+          <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+           
+          </div>
+          <div class="card-body pt-0">
+            <div class="text-center">
+              <div class="avatar-upload">
+                <div class="avatar-preview">
+                  <img [src]="user.profileImage || 'assets/img/theme/default-avatar.png'" 
+                       class="rounded-circle" width="150" height="150">
+                </div>
+              </div>
+              <h5 class="h3">{{ user.firstName }} {{ user.lastName }}</h5>
+              <div class="h5 font-weight-300">
+                <i class="ni location_pin mr-2"></i>{{ user.position }}
+              </div>
+              <div class="mt-4">
+                <span class="badge badge-pill badge-primary">{{ user.department }}</span>
+              </div>
+            </div>
+           
+            
+          </div>
+        </div>
+      </div>
+  
+      <div class="col-xl-8 order-xl-2">
+        <div class="card bg-secondary shadow">
+          <div class="card-header bg-white border-0">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3 class="mb-0">Edit Profile</h3>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <form>
+              <h6 class="heading-small text-muted mb-4">User information</h6>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">First name</label>
+                      <input type="text" class="form-control" [(ngModel)]="user.firstName" name="firstName">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">Last name</label>
+                      <input type="text" class="form-control" [(ngModel)]="user.lastName" name="lastName">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">Email address</label>
+                      <input type="email" class="form-control" [(ngModel)]="user.email" name="email">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">Phone</label>
+                      <input type="text" class="form-control" [(ngModel)]="user.phone" name="phone">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr class="my-4">
+              <h6 class="heading-small text-muted mb-4">Professional information</h6>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label class="form-control-label">Position</label>
+                      <input type="text" class="form-control" [(ngModel)]="user.position" name="position">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">Department</label>
+                      <input type="text" class="form-control" [(ngModel)]="user.department" name="department">
+                    </div>
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="form-group">
+                      <label class="form-control-label">Join Date</label>
+                      <input type="date" class="form-control" [(ngModel)]="user.joinDate" name="joinDate">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="button" class="btn btn-primary mt-4" (click)="saveProfile()">Save Changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

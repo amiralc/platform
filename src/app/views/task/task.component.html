@@ -1,0 +1,151 @@
+<!-- Header -->
+<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
+    <div class="container-fluid">
+      <div class="header-body">
+        <h2 class="text-white">Task Management</h2>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="container-fluid mt--7">
+    <div class="row">
+      <div class="col">
+        <div class="card shadow">
+          <div class="card-header border-0 d-flex justify-content-between align-items-center">
+            <h3 class="mb-0">Task Form</h3>
+          </div>
+  
+          <!-- Task Form -->
+          <div class="px-4 pb-4">
+            <form (ngSubmit)="onAddTask()">
+              <div class="form-group">
+                <label for="taskTitle">Task Title</label>
+                <input
+                  type="text"
+                  id="taskTitle"
+                  class="form-control"
+                  [(ngModel)]="newTask.title"
+                  name="taskTitle"
+                  placeholder="Enter task title"
+                  required
+                />
+              </div>
+  
+              <div class="form-group">
+                <label for="taskDescription">Description</label>
+                <textarea
+                  id="taskDescription"
+                  class="form-control"
+                  [(ngModel)]="newTask.description"
+                  name="taskDescription"
+                  placeholder="Enter task description"
+                  required
+                ></textarea>
+              </div>
+  
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="taskProject">Project</label>
+                    <select
+                      id="taskProject"
+                      class="form-control"
+                      [(ngModel)]="newTask.projectId"
+                      name="taskProject"
+                      required
+                    >
+                      <option value="" disabled selected>Select project</option>
+                      <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
+                    </select>
+                  </div>
+                </div>
+  
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="taskStatus">Status</label>
+                    <select
+                      id="taskStatus"
+                      class="form-control"
+                      [(ngModel)]="newTask.status"
+                      name="taskStatus"
+                      required
+                    >
+                      <option value="pending">Pending</option>
+                      <option value="in-progress">In Progress</option>
+                      <option value="completed">Completed</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="text-right mt-3">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  [disabled]="!isTaskFormValid()"
+                >
+                  {{ editingTaskId ? 'Update Task' : 'Add Task' }}
+                </button>
+  
+                <button
+                  *ngIf="editingTaskId"
+                  type="button"
+                  class="btn btn-secondary ml-2"
+                  (click)="cancelEdit()"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+  
+          <!-- Task List -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Task List</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <th scope="col">Project</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let task of tasks">
+                  <td>{{ task.title }}</td>
+                  <td>
+                    <span *ngIf="task.description.length <= 30">{{ task.description }}</span>
+                    <span *ngIf="task.description.length > 30" [title]="task.description">
+                      {{ task.description.substring(0, 30) }}...
+                    </span>
+                  </td>
+                  <td>{{ getProjectName(task.projectId) }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusClass(task.status)">
+                      {{ task.status | titlecase }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="btn btn-sm btn-icon btn-primary" (click)="onEditTask(task)">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-icon btn-danger ml-2" (click)="onDeleteTask(task.id)">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="tasks.length === 0">
+                  <td colspan="5" class="text-center py-4">No tasks found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
