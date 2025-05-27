@@ -1,151 +1,155 @@
-<!-- Header -->
-<div class="header bg-gradient-danger pb-8 pt-5 pt-md-8">
-    <div class="container-fluid">
-      <div class="header-body">
-        <h2 class="text-white">Task Management</h2>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Main Content -->
-  <div class="container-fluid mt--7">
-    <div class="row">
-      <div class="col">
-        <div class="card shadow">
-          <div class="card-header border-0 d-flex justify-content-between align-items-center">
-            <h3 class="mb-0">Task Form</h3>
-          </div>
-  
-          <!-- Task Form -->
-          <div class="px-4 pb-4">
-            <form (ngSubmit)="onAddTask()">
-              <div class="form-group">
-                <label for="taskTitle">Task Title</label>
-                <input
-                  type="text"
-                  id="taskTitle"
-                  class="form-control"
-                  [(ngModel)]="newTask.title"
-                  name="taskTitle"
-                  placeholder="Enter task title"
-                  required
-                />
-              </div>
-  
-              <div class="form-group">
-                <label for="taskDescription">Description</label>
-                <textarea
-                  id="taskDescription"
-                  class="form-control"
-                  [(ngModel)]="newTask.description"
-                  name="taskDescription"
-                  placeholder="Enter task description"
-                  required
-                ></textarea>
-              </div>
-  
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="taskProject">Project</label>
-                    <select
-                      id="taskProject"
-                      class="form-control"
-                      [(ngModel)]="newTask.projectId"
-                      name="taskProject"
-                      required
-                    >
-                      <option value="" disabled selected>Select project</option>
-                      <option *ngFor="let project of projects" [value]="project.id">{{ project.name }}</option>
-                    </select>
-                  </div>
-                </div>
-  
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="taskStatus">Status</label>
-                    <select
-                      id="taskStatus"
-                      class="form-control"
-                      [(ngModel)]="newTask.status"
-                      name="taskStatus"
-                      required
-                    >
-                      <option value="pending">Pending</option>
-                      <option value="in-progress">In Progress</option>
-                      <option value="completed">Completed</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-  
-              <div class="text-right mt-3">
-                <button
-                  type="submit"
-                  class="btn btn-primary"
-                  [disabled]="!isTaskFormValid()"
-                >
-                  {{ editingTaskId ? 'Update Task' : 'Add Task' }}
-                </button>
-  
-                <button
-                  *ngIf="editingTaskId"
-                  type="button"
-                  class="btn btn-secondary ml-2"
-                  (click)="cancelEdit()"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
-  
-          <!-- Task List -->
-          <div class="card-header border-0">
-            <h3 class="mb-0">Task List</h3>
-          </div>
-          <div class="table-responsive">
-            <table class="table align-items-center table-flush">
-              <thead class="thead-light">
-                <tr>
-                  <th scope="col">Title</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Project</th>
-                  <th scope="col">Status</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let task of tasks">
-                  <td>{{ task.title }}</td>
-                  <td>
-                    <span *ngIf="task.description.length <= 30">{{ task.description }}</span>
-                    <span *ngIf="task.description.length > 30" [title]="task.description">
-                      {{ task.description.substring(0, 30) }}...
-                    </span>
-                  </td>
-                  <td>{{ getProjectName(task.projectId) }}</td>
-                  <td>
-                    <span class="badge" [ngClass]="getStatusClass(task.status)">
-                      {{ task.status | titlecase }}
-                    </span>
-                  </td>
-                  <td>
-                    <button class="btn btn-sm btn-icon btn-primary" (click)="onEditTask(task)">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                    <button class="btn btn-sm btn-icon btn-danger ml-2" (click)="onDeleteTask(task.id)">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr *ngIf="tasks.length === 0">
-                  <td colspan="5" class="text-center py-4">No tasks found</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+<div class="container">
+  <h2>Jira Ticket Management</h2>
+
+  <button class="btn btn-primary mb-4" (click)="openCreateModal()">Create Ticket</button>
+
+  <!-- Create Modal -->
+  <div class="modal fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create Ticket</h5>
+          <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="createForm">
+            <div class="mb-3">
+              <label>Title</label>
+              <input type="text" class="form-control" formControlName="title" />
+              <div *ngIf="createForm.get('title')?.invalid && createForm.get('title')?.touched" class="text-danger">Title is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Description</label>
+              <textarea class="form-control" formControlName="description" rows="3"></textarea>
+              <div *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched" class="text-danger">Description is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Project</label>
+              <select class="form-control" formControlName="projectId">
+                <option value="">-- Select a Project --</option>
+                <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
+              </select>
+              <div *ngIf="createForm.get('projectId')?.invalid && createForm.get('projectId')?.touched" class="text-danger">Project is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Status</label>
+              <select class="form-control" formControlName="status">
+               
+                <option value=" OPEN"> OPEN</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
+                <option value="RESOLVED">RESOLVED</option>
+                <option value="CLOSED">CLOSED</option>
+              </select>
+              <div *ngIf="createForm.get('status')?.invalid && createForm.get('status')?.touched" class="text-danger">Status is required</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
+          <button class="btn btn-primary" [disabled]="createForm.invalid" (click)="addTicket()">Create</button>
         </div>
       </div>
     </div>
   </div>
+  <div class="modal-backdrop fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'"></div>
+
+  <!-- Ticket List -->
+  <div class="card">
+    <div class="card-header">
+      <h3>Ticket List</h3>
+    </div>
+    <div class="card-body">
+      <div *ngIf="tickets.length === 0" class="alert alert-info">No tickets available</div>
+
+      <div *ngIf="tickets.length > 0">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Description</th>
+              <th>Project</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ticket of tickets; trackBy: trackByTicketId">
+              <td>{{ ticket.title }}</td>
+              <td>{{ ticket.description }}</td>
+              <td>{{ getProjectName(ticket.project?.project_id) }}</td>
+              <td>
+                <span class="badge"
+                  [ngClass]="{
+                    'bg-secondary': ticket.status === 'OPEN',
+                    'bg-primary': ticket.status === 'IN_PROGRESS',
+                    'bg-success': ticket.status === 'RESOLVED',
+                    'bg-danger': ticket.status === 'CLOSED'
+                  }">
+                  {{ ticket.status }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)">Edit</button>
+                <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Ticket</h5>
+          <button type="button" class="btn-close" (click)="closeModal()"></button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="editForm">
+            <div class="mb-3">
+              <label>Title</label>
+              <input type="text" class="form-control" formControlName="title" />
+              <div *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="text-danger">Title is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Description</label>
+              <textarea class="form-control" formControlName="description" rows="3"></textarea>
+              <div *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="text-danger">Description is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Project</label>
+              <select class="form-control" formControlName="projectId">
+                <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
+              </select>
+              <div *ngIf="editForm.get('projectId')?.invalid && editForm.get('projectId')?.touched" class="text-danger">Project is required</div>
+            </div>
+
+            <div class="mb-3">
+              <label>Status</label>
+              <select class="form-control" formControlName="status">
+                <option value="OPEN">OPEN</option>
+                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="RESOLVED">RESOLVED</option>
+                <option value="CLOSED">CLOSED</option>
+              </select>
+              <div *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched" class="text-danger">Status is required</div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button class="btn btn-primary" [disabled]="editForm.invalid" (click)="updateTicket()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-backdrop fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'"></div>
+</div>

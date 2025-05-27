@@ -24,7 +24,7 @@ export const routes: Routes = [
     data: { title: 'Page 500' }
   },
 
-  // Redirect root path to dashboard
+
   {
     path: '',
     redirectTo: 'dashboard',
@@ -56,7 +56,7 @@ export const routes: Routes = [
       },
       {
         path: 'userprofiles',
-        loadComponent: () => import('./views/userprofile/userprofile.component').then(m => m.UserProfileComponent),
+        loadComponent: () => import('./views/userprofile/userprofile.component').then(m => m.UserprofileComponent),
         data: { title: 'User Profiles' }
       },
       {

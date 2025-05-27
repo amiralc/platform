@@ -6,7 +6,7 @@ import { AvatarModule } from '@coreui/angular';
 import { TableModule } from '@coreui/angular';
 
 // Components
-import { StatisticsComponent } from './statistics.component';// Adaptez le chemin selon votre structure
+import { StatisticsComponent } from './statistics.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,7 @@ import { StatisticsComponent } from './statistics.component';// Adaptez le chemi
     TableModule
   ],
   exports: [
-    StatisticsComponent // Optionnel - seulement si vous voulez l'utiliser ailleurs
+    StatisticsComponent 
   ]
 })
 export class StatisticsModule { }

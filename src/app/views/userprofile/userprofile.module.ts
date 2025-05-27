@@ -6,19 +6,19 @@ import { AvatarModule } from '@coreui/angular';
 import { TableModule } from '@coreui/angular';
 
 // Components
-import { UserProfileComponent } from './userprofile.component';  // Vérifiez le chemin de votre composant
+import { UserprofileComponent  } from './userprofile.component';  
 
 @NgModule({
   declarations: [
-    UserProfileComponent// Le composant que vous avez dans ce module
+   UserprofileComponent 
   ],
   imports: [
     CommonModule,
-    AvatarModule,  // Assurez-vous d'importer les modules CoreUI nécessaires
+    AvatarModule,  
     TableModule
   ],
   exports: [
-    UserProfileComponent // Exporter le composant si nécessaire
+    UserprofileComponent
   ]
 })
 export class UserProfileModule { }

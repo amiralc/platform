@@ -14,6 +14,8 @@ import { IconSetService } from '@coreui/icons-angular';
 import { routes } from './app.routes';
 import { provideHttpClient ,withInterceptors} from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(
@@ -31,8 +33,14 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
-    importProvidersFrom(SidebarModule, DropdownModule),
+    importProvidersFrom(SidebarModule, DropdownModule,BrowserAnimationsModule,  ToastrModule.forRoot({
+        positionClass: 'toast-middle-right',
+        timeOut: 3000,
+        closeButton: true,
+        progressBar: true,
+      })),
     IconSetService,
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    
   ]
 };

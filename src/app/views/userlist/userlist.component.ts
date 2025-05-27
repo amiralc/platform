@@ -1,45 +1,76 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { 
-  AvatarModule,
-  TableModule
-} from '@coreui/angular';
+import { FormsModule } from '@angular/forms';
+import { UserService, User } from '../../services/user.service';
 
 @Component({
   selector: 'app-userlist',
-  standalone: true,
-  imports: [
-    CommonModule,
-    AvatarModule,
-    TableModule
-  ],
   templateUrl: './userlist.component.html',
-  styleUrls: ['./userlist.component.scss']
+  styleUrls: ['./userlist.component.scss'],
+  standalone: true,
+  imports: [CommonModule, FormsModule]
 })
 export class UserlistComponent implements OnInit {
-users: any[] = [
-  {
-    id: 1,
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    phone: '123-456-7890',
-    position: 'Developer'
-  },
-  {
-    id: 2,
-    firstName: 'Alice',
-    lastName: 'Smith',
-    email: 'alice@example.com',
-    phone: '987-654-3210',
-    position: 'Project Manager'
-  }
-];
+  users: User[] = [];
+  selectedUser: User | null = null;
+  isModalOpen = false;
 
-
-  constructor() { }
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    // Chargez les données utilisateur ici si nécessaire
+    this.loadUsers();
   }
+
+  loadUsers(): void {
+    this.userService.getUsers().subscribe({
+      next: (users) => {
+        this.users = users;
+      },
+      error: (err) => {
+        console.error('Failed to load users', err);
+      }
+    });
+  }
+
+  openEditModal(user: User): void {
+    this.selectedUser = { ...user }; 
+    this.isModalOpen = true;
+  }
+
+  closeModal(): void {
+    this.isModalOpen = false;
+    this.selectedUser = null;
+  }
+
+  updateUser(): void {
+    if (!this.selectedUser) return;
+
+    this.userService.updateUser(this.selectedUser).subscribe({
+      next: () => {
+        this.loadUsers(); 
+        this.closeModal();
+      },
+      error: (err) => {
+        console.error('Failed to update user', err);
+      }
+    });
+  }
+  deleteUser(userId: number): void {
+  this.userService.deleteUser(userId).subscribe({
+    next: () => {
+      this.loadUsers(); 
+    },
+    error: (err) => {
+      console.error('Failed to delete user', err);
+    }
+  });
+}
+
+confirmDelete(user: User): void {
+  const confirmed = window.confirm(`Are you sure you want to delete ${user.firstname} ${user.lastname}?`);
+  if (confirmed) {
+    this.deleteUser(user.user_id);
+  }
+}
+
 }

@@ -1,4 +1,4 @@
-// src/app/views/projects/routes.ts
+
 import { Routes } from '@angular/router';
 import { ProjectsComponent } from './projects.component';
 
