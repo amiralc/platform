@@ -78,6 +78,7 @@ export class UserprofileComponent implements OnInit {
 
     
     const userToUpdate: User = {
+
       user_id: this.user.user_id,
       firstname: this.user.firstname,
       lastname: this.user.lastname,

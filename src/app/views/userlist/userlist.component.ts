@@ -12,8 +12,13 @@ import { UserService, User } from '../../services/user.service';
 })
 export class UserlistComponent implements OnInit {
   users: User[] = [];
-  selectedUser: User | null = null;
+
+  // Initialise selectedUser avec un objet User "vide" par défaut,
+  // pour éviter les erreurs de binding null
+  selectedUser: User = this.createEmptyUser();
+
   isModalOpen = false;
+  isCreating = false;
 
   constructor(private userService: UserService) {}
 
@@ -23,23 +28,52 @@ export class UserlistComponent implements OnInit {
 
   loadUsers(): void {
     this.userService.getUsers().subscribe({
-      next: (users) => {
-        this.users = users;
-      },
-      error: (err) => {
-        console.error('Failed to load users', err);
-      }
+      next: (users) => this.users = users,
+      error: (err) => console.error('Failed to load users', err)
     });
   }
 
+  // Méthode utilitaire pour créer un utilisateur vide
+  private createEmptyUser(): User {
+    return {
+      user_id: 0,
+      firstname: '',
+      lastname: '',
+      email: '',
+      phone: '',
+      role: '',
+      enabled: true,
+      password: ''
+    };
+  }
+
+  openCreateModal(): void {
+    this.isCreating = true;
+    this.selectedUser = this.createEmptyUser();
+    this.isModalOpen = true;
+  }
+
   openEditModal(user: User): void {
-    this.selectedUser = { ...user }; 
+    this.isCreating = false;
+    this.selectedUser = { ...user }; // copie pour éviter mutation directe
     this.isModalOpen = true;
   }
 
   closeModal(): void {
     this.isModalOpen = false;
-    this.selectedUser = null;
+    this.selectedUser = this.createEmptyUser(); // Réinitialiser l'objet pour éviter null
+  }
+
+  createUser(): void {
+    if (!this.selectedUser) return;
+
+    this.userService.createUser(this.selectedUser).subscribe({
+      next: () => {
+        this.loadUsers();
+        this.closeModal();
+      },
+      error: (err) => console.error('Failed to create user', err)
+    });
   }
 
   updateUser(): void {
@@ -47,30 +81,24 @@ export class UserlistComponent implements OnInit {
 
     this.userService.updateUser(this.selectedUser).subscribe({
       next: () => {
-        this.loadUsers(); 
+        this.loadUsers();
         this.closeModal();
       },
-      error: (err) => {
-        console.error('Failed to update user', err);
-      }
+      error: (err) => console.error('Failed to update user', err)
     });
   }
+
   deleteUser(userId: number): void {
-  this.userService.deleteUser(userId).subscribe({
-    next: () => {
-      this.loadUsers(); 
-    },
-    error: (err) => {
-      console.error('Failed to delete user', err);
-    }
-  });
-}
-
-confirmDelete(user: User): void {
-  const confirmed = window.confirm(`Are you sure you want to delete ${user.firstname} ${user.lastname}?`);
-  if (confirmed) {
-    this.deleteUser(user.user_id);
+    this.userService.deleteUser(userId).subscribe({
+      next: () => this.loadUsers(),
+      error: (err) => console.error('Failed to delete user', err)
+    });
   }
-}
 
+  confirmDelete(user: User): void {
+    const confirmed = window.confirm(`Are you sure you want to delete ${user.firstname} ${user.lastname}?`);
+    if (confirmed) {
+      this.deleteUser(user.user_id);
+    }
+  }
 }

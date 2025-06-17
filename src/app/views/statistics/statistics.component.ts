@@ -1,198 +1,119 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { Chart, ChartConfiguration, registerables } from 'chart.js';
-
+import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-statistics',
-  standalone: true,
   templateUrl: './statistics.component.html',
-  styleUrls: ['./statistics.component.scss']
+  styleUrls: ['./statistics.component.scss'],
+  standalone: true,
 })
 export class StatisticsComponent implements AfterViewInit {
 
-  ngAfterViewInit() {
-    
-    const tasksPerMember = {
-      labels: ['Alice', 'Bob', 'Charlie', 'Diana'],
-      data: [12, 19, 7, 14]
-    };
-    const barConfig: ChartConfiguration = {
+  ngAfterViewInit(): void {
+    this.renderBarChart();
+    this.renderPieChart();
+    this.renderLineChart();
+    this.renderDoughnutChart();
+    this.renderRadarChart();
+    this.renderHorizontalBarChart();
+  }
+
+  renderBarChart() {
+    new Chart('barChart', {
       type: 'bar',
       data: {
-        labels: tasksPerMember.labels,
+        labels: ['Alice', 'Bob', 'Charlie', 'Diana'],
         datasets: [{
           label: 'Tâches terminées',
-          data: tasksPerMember.data,
+          data: [12, 19, 7, 14],
           backgroundColor: 'rgba(75, 192, 192, 0.6)'
         }]
       },
       options: {
         responsive: true,
-        plugins: {
-          legend: { display: true },
-          title: {
-            display: true,
-            text: 'Nombre de tâches terminées par membre'
-          }
-        }
       }
-    };
-    new Chart('barChart', barConfig);
+    });
+  }
 
-    
-    const complexityData = {
-      labels: ['Facile', 'Moyenne', 'Difficile'],
-      data: [10, 15, 5]
-    };
-    const pieConfig: ChartConfiguration = {
+  renderPieChart() {
+    new Chart('pieChart', {
       type: 'pie',
       data: {
-        labels: complexityData.labels,
+        labels: ['Facile', 'Moyenne', 'Difficile'],
         datasets: [{
-          label: 'Complexité des tâches',
-          data: complexityData.data,
-          backgroundColor: [
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(54, 162, 235, 0.6)',
-            'rgba(255, 99, 132, 0.6)'
-          ]
+          data: [10, 15, 5],
+          backgroundColor: ['#FFCE56', '#36A2EB', '#FF6384']
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' },
-          title: {
-            display: true,
-            text: 'Répartition des tâches par complexité'
-          }
-        }
-      }
-    };
-    new Chart('pieChart', pieConfig);
+      options: { responsive: true }
+    });
+  }
 
-    // 3. Temps moyen passé par tâche par membre 
-    const avgTimePerTask = {
-      labels: ['Alice', 'Bob', 'Charlie', 'Diana'],
-      data: [3.5, 4.2, 2.8, 5.0]
-    };
-    const avgTimeBarConfig: ChartConfiguration = {
-      type: 'bar',
+  renderLineChart() {
+    new Chart('lineChart', {
+      type: 'line',
       data: {
-        labels: avgTimePerTask.labels,
+        labels: ['Alice', 'Bob', 'Charlie', 'Diana'],
         datasets: [{
-          label: 'Temps moyen passé (heures)',
-          data: avgTimePerTask.data,
-          backgroundColor: 'rgba(153, 102, 255, 0.6)'
+          label: 'Temps moyen (h)',
+          data: [3.5, 4.2, 2.8, 5.0],
+          fill: false,
+          borderColor: 'rgba(153, 102, 255, 0.6)',
+          tension: 0.4
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: true },
-          title: {
-            display: true,
-            text: 'Temps moyen passé par tâche (heures)'
-          }
-        }
-      }
-    };
-    new Chart('avgTimeBarChart', avgTimeBarConfig);
+      options: { responsive: true }
+    });
+  }
 
-    
-    const taskProgressData = {
-      labels: ['Complétées', 'En cours', 'En attente'],
-      data: [40, 30, 30]
-    };
-    const progressDoughnutConfig: ChartConfiguration = {
+  renderDoughnutChart() {
+    new Chart('doughnutChart', {
       type: 'doughnut',
       data: {
-        labels: taskProgressData.labels,
+        labels: ['Complétées', 'En cours', 'En attente'],
         datasets: [{
-          label: 'Progression des tâches',
-          data: taskProgressData.data,
-          backgroundColor: [
-            'rgba(75, 192, 192, 0.7)',
-            'rgba(255, 206, 86, 0.7)',
-            'rgba(255, 99, 132, 0.7)'
-          ]
+          data: [40, 30, 30],
+          backgroundColor: ['#4BC0C0', '#FFCE56', '#FF6384']
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' },
-          title: {
-            display: true,
-            text: 'Progression des tâches en pourcentage'
-          }
-        }
-      }
-    };
-    new Chart('progressDoughnutChart', progressDoughnutConfig);
+      options: { responsive: true }
+    });
+  }
 
-    const delayData = {
-      labels: ['En retard', 'Dans les temps'],
-      data: [15, 85]
-    };
-    const delayPieConfig: ChartConfiguration = {
-      type: 'pie',
+  renderRadarChart() {
+    new Chart('radarChart', {
+      type: 'radar',
       data: {
-        labels: delayData.labels,
+        labels: ['En retard', 'Dans les temps'],
         datasets: [{
-          label: 'Tâches en retard vs dans les temps',
-          data: delayData.data,
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.7)',
-            'rgba(54, 162, 235, 0.7)'
-          ]
+          label: 'État des tâches',
+          data: [15, 85],
+          backgroundColor: 'rgba(54, 162, 235, 0.2)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
         }]
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'bottom' },
-          title: {
-            display: true,
-            text: 'Tâches en retard vs dans les temps'
-          }
-        }
-      }
-    };
-    new Chart('delayPieChart', delayPieConfig);
+      options: { responsive: true }
+    });
+  }
 
-    
-    const tasksByStatus = {
-      labels: ['En cours', 'Terminées', 'En attente'],
-      data: [50, 100, 25]
-    };
-    const statusBarConfig: ChartConfiguration = {
+  renderHorizontalBarChart() {
+    new Chart('horizontalBarChart', {
       type: 'bar',
       data: {
-        labels: tasksByStatus.labels,
+        labels: ['En cours', 'Terminées', 'En attente'],
         datasets: [{
-          label: 'Nombre de tâches',
-          data: tasksByStatus.data,
-          backgroundColor: [
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255, 99, 132, 0.6)'
-          ]
+          data: [50, 100, 25],
+          label: 'Tâches',
+          backgroundColor: ['#FFCE56', '#4BC0C0', '#FF6384']
         }]
       },
       options: {
+        indexAxis: 'y',
         responsive: true,
-        plugins: {
-          legend: { display: false },
-          title: {
-            display: true,
-            text: 'Répartition des tâches par état'
-          }
-        }
       }
-    };
-    new Chart('statusBarChart', statusBarConfig);
+    });
   }
 }

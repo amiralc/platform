@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProjectService, Project } from '../../services/project.service';
+import { ProjectService, Project,TeamMember } from '../../services/project.service';
 import {  ToastrService } from 'ngx-toastr';
 
 
@@ -14,6 +14,7 @@ import {  ToastrService } from 'ngx-toastr';
      
     
   ],
+  
   templateUrl: './projects.component.html',
   styleUrls: ['./projects.component.scss']
 })
@@ -24,12 +25,16 @@ export class ProjectsComponent implements OnInit {
   showForm = false;
   isModalOpen = false;
   isCreateModalOpen = false;
+   isTeamModalOpen = false;
   selectedProject: Project = {
     project_id: 0,
     name: '',
     description: '',
-    tickets: []
+    tickets: [],
+      team: []
   };
+   selectedTeam: TeamMember[] = [];
+  manager: TeamMember | null = null;
   newProject: Partial<Project> = {
     name: '',
     description: ''
@@ -93,7 +98,8 @@ export class ProjectsComponent implements OnInit {
       project_id: 0,
       name: '',
       description: '',
-      tickets: []
+      tickets: [],
+       team: []
     };
     document.body.style.overflow = '';
   }
@@ -150,6 +156,21 @@ export class ProjectsComponent implements OnInit {
         }
       });
     }
+  }
+    viewTeam(project: Project): void {
+    this.selectedProject = { ...project };
+    this.selectedTeam = project.team;
+
+    this.manager = this.selectedTeam.find(member => member.role === 'MANAGER') || null;
+    this.isTeamModalOpen = true;
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeTeamModal(): void {
+    this.isTeamModalOpen = false;
+    document.body.style.overflow = '';
+    this.selectedTeam = [];
+    this.manager = null;
   }
 
   trackByProjectId(index: number, project: Project): number {

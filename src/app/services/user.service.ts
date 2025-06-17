@@ -10,6 +10,7 @@ export interface User {
   phone: string | null;
   role: string | null;
   enabled: boolean;
+   password?: string;
 }
 
 @Injectable({
@@ -30,5 +31,9 @@ export class UserService {
 deleteUser(userId: number): Observable<void> {
   return this.http.delete<void>(`${this.apiUrl}/${userId}`);
 }
+createUser(user: User): Observable<User> {
+  return this.http.post<User>(this.apiUrl, user);
+}
+
 
 }

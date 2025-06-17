@@ -1,33 +1,28 @@
-<div class="statistics-container">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 p-4">
 
-  <section class="chart-section">
-    <h3>Tâches terminées par membre</h3>
-    <canvas id="barChart"></canvas>
-  </section>
+  <div class="card p-4 shadow-md rounded-lg bg-white">
+    <h3 class="card-title text-center text-lg font-semibold mb-2">Tasks Completed by Member</h3>
+    <canvas id="barChart" class="w-full max-w-[300px] h-[200px] mx-auto"></canvas>
+  </div>
 
-  <section class="chart-section">
-    <h3>Répartition des tâches par complexité</h3>
-    <canvas id="pieChart"></canvas>
-  </section>
+  <div class="card p-4 shadow-md rounded-lg bg-white">
+    <h3 class="card-title text-center text-lg font-semibold mb-2">Task Distribution by Complexity</h3>
+    <canvas id="pieChart" class="w-full max-w-[300px] h-[200px] mx-auto"></canvas>
+  </div>
 
-  <section class="chart-section">
-    <h3>Temps moyen passé par tâche</h3>
-    <canvas id="avgTimeBarChart"></canvas>
-  </section>
+  <div class="card p-4 shadow-md rounded-lg bg-white">
+    <h3 class="card-title text-center text-lg font-semibold mb-2">Average Time Spent per Task</h3>
+    <canvas id="lineChart" class="w-full max-w-[300px] h-[200px] mx-auto"></canvas>
+  </div>
 
-  <section class="chart-section">
-    <h3>Progression des tâches (en %)</h3>
-    <canvas id="progressDoughnutChart"></canvas>
-  </section>
+  <div class="card p-4 shadow-md rounded-lg bg-white">
+    <h3 class="card-title text-center text-lg font-semibold mb-2">Task Progress (%)</h3>
+    <canvas id="doughnutChart" class="w-full max-w-[300px] h-[200px] mx-auto"></canvas>
+  </div>
 
-  <section class="chart-section">
-    <h3>Tâches en retard vs dans les temps</h3>
-    <canvas id="delayPieChart"></canvas>
-  </section>
-
-  <section class="chart-section">
-    <h3>Répartition des tâches par état</h3>
-    <canvas id="statusBarChart"></canvas>
-  </section>
+  <div class="card p-4 shadow-md rounded-lg bg-white">
+    <h3 class="card-title text-center text-lg font-semibold mb-2">Tasks by Status</h3>
+    <canvas id="horizontalBarChart" class="w-full max-w-[300px] h-[200px] mx-auto"></canvas>
+  </div>
 
 </div>

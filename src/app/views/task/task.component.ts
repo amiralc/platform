@@ -67,7 +67,7 @@ export class TaskComponent implements OnInit {
 
   getProjectName(projectId: number | undefined): string {
   const project = this.projects.find((p) => p.project_id === projectId);
-  // Si project existe et project.name est défini, retourne project.name, sinon 'Inconnu'
+  
   return project && project.name ? project.name : 'Inconnu';
 }
 

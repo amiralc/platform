@@ -1,5 +1,6 @@
 import { ApplicationConfig, importProvidersFrom } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+import { provideAnimations } from '@angular/platform-browser/animations';
 import {
   provideRouter,
   withEnabledBlockingInitialNavigation,
@@ -21,6 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([AuthInterceptor]) 
     ),
+    
+     provideAnimations(),
     provideRouter(routes,
       withRouterConfig({
         onSameUrlNavigation: 'reload'
@@ -40,7 +43,7 @@ export const appConfig: ApplicationConfig = {
         progressBar: true,
       })),
     IconSetService,
-    provideAnimationsAsync(),
+  
     
   ]
 };

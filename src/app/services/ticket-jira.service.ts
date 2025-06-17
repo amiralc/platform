@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface Project {
   project_id: number;
-  name?: string; // rendre name optionnel
+  name?: string; 
 }
 
 export interface TicketJira {
@@ -24,8 +24,8 @@ export interface TicketJira {
   providedIn: 'root'
 })
 export class TicketJiraService {
-  private baseUrl = 'http://localhost:8083/api/tickets'; // à adapter selon ton backend
-  private projectUrl = 'http://localhost:8083/api/projects'; // idem
+  private baseUrl = 'http://localhost:8083/api/tickets'; 
+  private projectUrl = 'http://localhost:8083/api/projects'; 
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +38,7 @@ export class TicketJiraService {
   }
 
 createTicket(ticket: TicketJira): Observable<TicketJira> {
-  // Ajoutez le logging pour débogage
+  
   console.log('Envoi au backend:', ticket);
   return this.http.post<TicketJira>(this.baseUrl, ticket);
 }

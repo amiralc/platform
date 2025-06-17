@@ -7,6 +7,12 @@ export interface Project {
   name: string;
   description: string;
   tickets: any[] | null;
+   team: TeamMember[];
+}
+export interface TeamMember {
+  user_id: number;
+  full_name: string;
+  role: string; 
 }
 
 @Injectable({

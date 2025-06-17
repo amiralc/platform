@@ -21,26 +21,28 @@ export class LoginComponent {
   {
     
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+           email: ['', [Validators.required, Validators.email]],
+
       password: ['', Validators.required]
     });
   }
 
-    onSubmit(): void {
-    if (this.loginForm.invalid) return;
+   onSubmit(): void {
+  if (this.loginForm.invalid) return;
 
-    const credentials = this.loginForm.value;
-  
-    this.authService.login(credentials).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        this.router.navigate(['/dashboard']); 
-      },
-      error: (err) => {
-        this.errorMessage = 'Invalid email or password';
-       
-      }
-    });
-  }
+  const credentials = this.loginForm.value;
+
+  this.authService.login(credentials).subscribe({
+    next: (token: string) => {
+      console.log('Token reçu:', token);
+      localStorage.setItem('token', token);
+      this.router.navigate(['/dashboard']);
+    },
+    error: (err) => {
+      console.error('Erreur login:', err);
+      this.errorMessage = 'Invalid username or password';
+    }
+  });
+}
 
 }
