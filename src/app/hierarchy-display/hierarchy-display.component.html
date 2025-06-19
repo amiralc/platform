@@ -1,0 +1,19 @@
+<div class="hierarchy-tree">
+  <ul class="tree">
+    <li *ngFor="let node of nodes; trackBy: trackById" class="node">
+      <div class="node-content" (click)="toggleExpand(node)">
+        <img *ngIf="node.photoUrl" [src]="node.photoUrl" alt="Photo" class="node-photo">
+        <div class="node-info">
+          <span class="node-name">{{node.name}}</span>
+          <span class="node-title">{{node.title}}</span>
+        </div>
+        <span *ngIf="node.children" class="toggle-icon">
+          {{node.expanded ? '▼' : '►'}}
+        </span>
+      </div>
+      <div *ngIf="node.children && node.expanded" class="children">
+        <app-organization-hierarchy [nodes]="node.children"></app-organization-hierarchy>
+      </div>
+    </li>
+  </ul>
+</div>

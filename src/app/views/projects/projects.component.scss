@@ -1,0 +1,164 @@
+/* ================ */
+/* MODALS GENERAUX  */
+/* ================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+}
+
+.modal-content-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 8px;
+  z-index: 1001;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content {
+  padding: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* ================ */
+/* MODAL CREATE/EDIT */ 
+/* ================ */
+.modal-content-wrapper.create-edit-modal {
+  max-width: 600px; /* Taille intermédiaire pour les formulaires */
+
+  .form-group {
+    margin-bottom: 15px;
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    
+    input, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    textarea {
+      min-height: 100px;
+    }
+  }
+
+  .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+}
+
+/* ================ */
+/* MODAL TEAM (COMPACTE) */
+/* ================ */
+.modal-content-wrapper.team-modal {
+  max-width: 500px; /* Plus compacte */
+  max-height: 80vh;
+  padding: 15px;
+
+  .modal-header {
+    padding: 10px 15px;
+    h3 {
+      font-size: 1.2rem;
+      margin: 0;
+    }
+  }
+
+  .team-info, .manager-section, .members-section, .hierarchy-section {
+    margin-bottom: 15px;
+    
+    h4, h5 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+  }
+
+  .member-card {
+    padding: 8px;
+    margin-bottom: 8px;
+    
+    .avatar {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    
+    .member-info {
+      h6 {
+        font-size: 0.9rem;
+      }
+      
+      p {
+        font-size: 0.8rem;
+        margin: 3px 0;
+      }
+    }
+  }
+
+  .members-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .no-team, .assign-team-modal {
+    padding: 10px;
+    
+    .btn {
+      padding: 5px 10px;
+      font-size: 0.9rem;
+    }
+  }
+
+  .assign-team-modal {
+    select.form-select {
+      padding: 5px;
+      font-size: 0.9rem;
+    }
+    
+    .btn {
+      margin-top: 10px;
+    }
+  }
+}
+
+/* ================ */
+/* BADGES & ROLES */
+/* ================ */
+.badge {
+  display: inline-block;
+  padding: 3px 6px;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  color: #495057;
+  margin-right: 5px;
+  
+  &.bg-primary {
+    background-color: #007bff;
+    color: white;
+  }
+}
