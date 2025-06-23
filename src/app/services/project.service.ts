@@ -2,9 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-<<<<<<< HEAD
 export interface User {
-  user_id: number;
+  id: number;
   firstname: string | null;
   lastname: string | null;
   email: string;
@@ -28,13 +27,10 @@ export interface Team {
   departement: Department;
 }
 
-=======
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
 export interface Project {
   project_id: number;
   name: string;
   description: string;
-<<<<<<< HEAD
   tickets: any[];
   workedOn: Team | null;
 }
@@ -45,22 +41,16 @@ export interface OrganizationNode {
   title: string;
   photoUrl?: string;
   children?: OrganizationNode[];
-=======
-  tickets: any[] | null;
-   team: TeamMember[];
 }
-export interface TeamMember {
-  user_id: number;
-  full_name: string;
-  role: string; 
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
+export interface AssignTeamRequest {
+  userId: number;
+  teamId: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService {
-<<<<<<< HEAD
   private apiUrl = 'http://localhost:8083/api';
   
 
@@ -106,25 +96,18 @@ export class ProjectService {
   getAvailableTeams(): Observable<Team[]> {
     return this.http.get<Team[]>(`${this.apiUrl}/teams`);
   }
+  assignUserToTeam(userId: number, teamId: number, token: string): Observable<any> {
+  return this.http.post(
+    `${this.apiUrl}/users/assign-to-team`,
+    { userId, teamId },
+    {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+  );
 }
-=======
-  private apiUrl = 'http://localhost:8083/api/projects';
-
-  constructor(private http: HttpClient) { }
-
-  getProjects(): Observable<Project[]> {
-    return this.http.get<Project[]>(this.apiUrl);
-  }
-
-  createProject(project: { name: string; description: string }): Observable<Project> {
-    return this.http.post<Project>(this.apiUrl, project);
-  }
-
-  updateProject(id: number, project: Partial<Project>): Observable<Project> {
-    return this.http.put<Project>(`${this.apiUrl}/${id}`, project);
-  }
-  deleteProject(project_id: number) {
-  return this.http.delete<void>(`${this.apiUrl}/${project_id}`);
+getAvailableUsers(): Observable<User[]> {
+  return this.http.get<User[]>(`${this.apiUrl}/users/available`);
 }
 }
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce

@@ -1,21 +1,13 @@
-<<<<<<< HEAD
 /* ================ */
 /* MODALS GENERAUX  */
 /* ================ */
-=======
-
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-<<<<<<< HEAD
   background: rgba(0,0,0,0.5);
-=======
-  background-color: rgba(0, 0, 0, 0.5);
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
   z-index: 1000;
 }
 
@@ -24,7 +16,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-<<<<<<< HEAD
   background: white;
   border-radius: 8px;
   z-index: 1001;
@@ -32,43 +23,17 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
-=======
-  background-color: white;
-  border-radius: 8px;
-  z-index: 1001;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
 }
 
 .modal-content {
   padding: 20px;
 }
 
-<<<<<<< HEAD
-=======
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modal-title {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
 .close-btn {
   background: none;
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
-<<<<<<< HEAD
 }
 
 /* ================ */
@@ -196,33 +161,5 @@
     background-color: #007bff;
     color: white;
   }
+  
 }
-=======
-  color: #6c757d;
-  &:hover {
-    color: #495057;
-  }
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.error-message {
-  color: #dc3545;
-  font-size: 0.875rem;
-  margin-top: 5px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .modal-content-wrapper {
-    width: 95%;
-  }
-
-}
-
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce

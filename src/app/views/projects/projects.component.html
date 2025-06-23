@@ -1,27 +1,15 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
 <div class="container-fluid mt--7">
   <div class="row">
     <div class="col">
       <div class="card shadow">
-<<<<<<< HEAD
 
         <!-- Header -->
-=======
-       
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
               <h3 class="mb-0">Projects Table</h3>
             </div>
-<<<<<<< HEAD
             <div class="col text-end">
-=======
-            <div class="col text-right">
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
               <input
                 type="text"
                 class="form-control"
@@ -32,11 +20,7 @@
             </div>
           </div>
           <div class="row mt-3">
-<<<<<<< HEAD
             <div class="col text-end">
-=======
-            <div class="col text-right">
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
               <button class="btn btn-primary" (click)="openCreateModal()">
                 Create Project
               </button>
@@ -44,29 +28,16 @@
           </div>
         </div>
 
-<<<<<<< HEAD
         <!-- Projects Table -->
-=======
-        
-
-        
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
         <div class="table-responsive">
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
-<<<<<<< HEAD
                 <th>Name</th>
                 <th>Description</th>
                 <th>Tickets</th>
                 <th>Team</th>
                 <th>Actions</th>
-=======
-                <th scope="col">Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Tickets</th>
-                <th scope="col">Actions</th>
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
               </tr>
             </thead>
             <tbody>
@@ -74,21 +45,12 @@
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
                 <td>
-<<<<<<< HEAD
                   <ng-container *ngIf="project.tickets?.length; else emptyTickets">
                     <span *ngFor="let ticket of project.tickets" class="badge bg-primary me-1">
-=======
-                  <ng-container *ngIf="project.tickets && project.tickets.length > 0; else emptyTickets">
-                    <span
-                      *ngFor="let ticket of project.tickets"
-                      class="badge badge-primary mr-1"
-                    >
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
                       {{ ticket }}
                     </span>
                   </ng-container>
                   <ng-template #emptyTickets>
-<<<<<<< HEAD
                     <span class="text-muted">No tickets</span>
                   </ng-template>
                 </td>
@@ -102,24 +64,12 @@
                   </button>
                 </td>
                 <td>
-=======
-                    <!-- no tickets -->
-                  </ng-template>
-                </td>
-                <td>
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
                   <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(project)">
                     Edit
                   </button>
                   <button
-<<<<<<< HEAD
                     class="btn btn-sm btn-danger"
                     (click)="confirmDelete(project.project_id)"
-=======
-                    class="btn btn-sm btn-danger ml-2 "
-                    (click)="confirmDelete(project.project_id)"
-                    [disabled]="showForm"
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
                   >
                     Delete
                   </button>
@@ -128,16 +78,12 @@
             </tbody>
           </table>
         </div>
-<<<<<<< HEAD
 
-=======
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
       </div>
     </div>
   </div>
 </div>
 
-<<<<<<< HEAD
 <!-- Team Modal -->
 <div class="modal-overlay" *ngIf="isTeamModalOpen" (click)="closeTeamModal()"></div>
 <div class="modal-content-wrapper" *ngIf="isTeamModalOpen">
@@ -173,7 +119,12 @@
 
       <!-- Team Members -->
       <div class="members-section">
-        <h5>Team Members ({{selectedProject.workedOn.members.length}})</h5>
+        <div class="d-flex justify-content-between align-items-center">
+          <h5>Team Members ({{selectedProject.workedOn.members.length}})</h5>
+          <button class="btn btn-sm btn-success" (click)="openAddMemberModal()">
+            Add Member
+          </button>
+        </div>
         <div class="members-grid">
           <div class="member-card" *ngFor="let member of selectedProject.workedOn.members">
             <img [src]="getMemberPhoto(member)" alt="Member" class="avatar" />
@@ -188,11 +139,6 @@
         </div>
       </div>
 
-      <!-- Hierarchy -->
-      <div class="hierarchy-section mt-4">
-        <h5>Organization Structure</h5>
-        <app-organization-hierarchy [nodes]="organizationHierarchy"></app-organization-hierarchy>
-      </div>
     </div>
 
     <!-- If no team -->
@@ -215,6 +161,47 @@
     </ng-template>
   </div>
 </div>
+
+<!-- Add Member Modal -->
+<div class="modal-overlay" *ngIf="isAddMemberModalOpen" (click)="closeAddMemberModal()"></div>
+<div class="modal-content-wrapper" *ngIf="isAddMemberModalOpen">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add Member to Team</h3>
+      <button (click)="closeAddMemberModal()" class="close-btn">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="userSelect">Select User</label>
+        <select
+          id="userSelect"
+          [(ngModel)]="selectedUserId"
+          class="form-select"
+          required
+        >
+          <option [value]="null" disabled selected>Select a user</option>
+          <option *ngFor="let user of availableUsers" [value]="user.id">
+            {{user.fullName}} ({{user.email}})
+          </option>
+        </select>
+      </div>
+      <div class="modal-actions mt-3">
+        <button type="button" class="btn btn-secondary" (click)="closeAddMemberModal()">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="addMemberToTeam()"
+          [disabled]="!selectedUserId"
+        >
+          Add Member
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 <!-- Create Project Modal -->
 <div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()"></div>
@@ -249,65 +236,11 @@
           Cancel
         </button>
         <button type="submit" class="btn btn-primary">Create</button>
-=======
-<div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()"></div>
-
-
-<div class="modal-content-wrapper" *ngIf="isCreateModalOpen">
-  <div class="modal-content">
-    <form (ngSubmit)="createProject()" #createForm="ngForm">
-      <div class="modal-header">
-        <h5 class="modal-title">Create Project</h5>
-        <button type="button" class="close-btn" (click)="closeCreateModal()">
-          &times;
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label for="createName">Project Name</label>
-          <input
-            type="text"
-            id="createName"
-            class="form-control"
-            required
-            [(ngModel)]="newProject.name"
-            name="createName"
-            #createNameInput="ngModel"
-          />
-          <div *ngIf="createNameInput.invalid && (createNameInput.dirty || createNameInput.touched)" class="error-message">
-            Name is required
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="createDescription">Description</label>
-          <textarea
-            id="createDescription"
-            class="form-control"
-            required
-            [(ngModel)]="newProject.description"
-            name="createDescription"
-            #createDescInput="ngModel"
-            rows="3"
-          ></textarea>
-          <div *ngIf="createDescInput.invalid && (createDescInput.dirty || createDescInput.touched)" class="error-message">
-            Description is required
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-success" [disabled]="createForm.invalid">
-          Save
-        </button>
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
       </div>
     </form>
   </div>
 </div>
 
-<<<<<<< HEAD
 <!-- Edit Project Modal -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
 <div class="modal-content-wrapper" *ngIf="isModalOpen">
@@ -345,58 +278,3 @@
     </form>
   </div>
 </div>
-=======
-
-<div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
-
-<div class="modal-content-wrapper" *ngIf="isModalOpen">
-  <div class="modal-content">
-    <form (ngSubmit)="updateProject()" #editForm="ngForm">
-      <div class="modal-header">
-        <h5 class="modal-title">Edit Project</h5>
-        <button type="button" class="close-btn" (click)="closeModal()">
-          &times;
-        </button>
-      </div>
-      <div class="modal-body">
-        <div class="form-group">
-          <label>Project Name</label>
-          <input
-            type="text"
-            class="form-control"
-            [(ngModel)]="selectedProject.name"
-            name="editName"
-            required
-            #nameInput="ngModel"
-          />
-          <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="error-message">
-            Name is required
-          </div>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea
-            class="form-control"
-            [(ngModel)]="selectedProject.description"
-            name="editDescription"
-            required
-            #descInput="ngModel"
-            rows="3"
-          ></textarea>
-          <div *ngIf="descInput.invalid && (descInput.dirty || descInput.touched)" class="error-message">
-            Description is required
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">
-          Cancel
-        </button>
-        <button type="submit" class="btn btn-primary" [disabled]="editForm.invalid">
-          Save Changes
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
->>>>>>> 9908b23afbe3f23f03b50f8a29b8e271c01a35ce
