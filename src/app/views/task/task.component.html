@@ -1,7 +1,62 @@
-<div class="container">
-  <h2>Jira Ticket Management</h2>
+<!-- ticket-project.component.html -->
+<div class="container-fluid mt--7">
+  <div class="row">
+    <div class="col">
+      <div class="card shadow">
 
-  <button class="btn btn-primary mb-4" (click)="openCreateModal()">Create Ticket</button>
+        <!-- Header -->
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">Jira Ticket Management</h3>
+            </div>
+            <div class="col text-end">
+              <button class="btn btn-primary" (click)="openCreateModal()">Create Ticket</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket Table -->
+        <div class="table-responsive">
+          <table class="table align-items-center table-flush">
+            <thead class="thead-light">
+              <tr>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Project</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let ticket of tickets; trackBy: trackByTicketId">
+                <td>{{ ticket.title }}</td>
+                <td>{{ ticket.description }}</td>
+                <td>{{ getProjectName(ticket.project?.project_id) }}</td>
+                <td>
+                  <span class="badge"
+                    [ngClass]="{
+                      'bg-secondary': ticket.status === 'OPEN',
+                      'bg-primary': ticket.status === 'IN_PROGRESS',
+                      'bg-success': ticket.status === 'RESOLVED',
+                      'bg-danger': ticket.status === 'CLOSED'
+                    }">
+                    {{ ticket.status }}
+                  </span>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)">Edit</button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="tickets.length === 0" class="alert alert-info m-3">No tickets available</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
 
   <!-- Create Modal -->
   <div class="modal fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'">
@@ -37,8 +92,7 @@
             <div class="mb-3">
               <label>Status</label>
               <select class="form-control" formControlName="status">
-               
-                <option value=" OPEN"> OPEN</option>
+                <option value="OPEN">OPEN</option>
                 <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="CLOSED">CLOSED</option>
@@ -55,52 +109,6 @@
     </div>
   </div>
   <div class="modal-backdrop fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'"></div>
-
-  <!-- Ticket List -->
-  <div class="card">
-    <div class="card-header">
-      <h3>Ticket List</h3>
-    </div>
-    <div class="card-body">
-      <div *ngIf="tickets.length === 0" class="alert alert-info">No tickets available</div>
-
-      <div *ngIf="tickets.length > 0">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Project</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let ticket of tickets; trackBy: trackByTicketId">
-              <td>{{ ticket.title }}</td>
-              <td>{{ ticket.description }}</td>
-              <td>{{ getProjectName(ticket.project?.project_id) }}</td>
-              <td>
-                <span class="badge"
-                  [ngClass]="{
-                    'bg-secondary': ticket.status === 'OPEN',
-                    'bg-primary': ticket.status === 'IN_PROGRESS',
-                    'bg-success': ticket.status === 'RESOLVED',
-                    'bg-danger': ticket.status === 'CLOSED'
-                  }">
-                  {{ ticket.status }}
-                </span>
-              </td>
-              <td>
-                <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)">Edit</button>
-                <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)">Delete</button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
 
   <!-- Edit Modal -->
   <div class="modal fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'">
@@ -136,7 +144,7 @@
               <label>Status</label>
               <select class="form-control" formControlName="status">
                 <option value="OPEN">OPEN</option>
-                <option value="IN_PROGRESS">IN PROGRESS</option>
+                <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="CLOSED">CLOSED</option>
               </select>

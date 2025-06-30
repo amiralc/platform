@@ -96,17 +96,19 @@ export class ProjectService {
   getAvailableTeams(): Observable<Team[]> {
     return this.http.get<Team[]>(`${this.apiUrl}/teams`);
   }
-  assignUserToTeam(userId: number, teamId: number, token: string): Observable<any> {
+ assignUserToTeam(userId: number, teamId: number, token: string): Observable<string> {
   return this.http.post(
     `${this.apiUrl}/users/assign-to-team`,
     { userId, teamId },
     {
       headers: {
         'Authorization': `Bearer ${token}`
-      }
+      },
+      responseType: 'text'  // Important : attendre une réponse texte et non JSON
     }
   );
 }
+
 getAvailableUsers(): Observable<User[]> {
   return this.http.get<User[]>(`${this.apiUrl}/users/available`);
 }

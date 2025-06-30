@@ -86,156 +86,194 @@
 
 <!-- Team Modal -->
 <div class="modal-overlay" *ngIf="isTeamModalOpen" (click)="closeTeamModal()"></div>
-<div class="modal-content-wrapper" *ngIf="isTeamModalOpen">
+<div class="modal-content-wrapper team-modal" *ngIf="isTeamModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Team Details: {{selectedProject.name}}</h3>
+      <h5>{{selectedProject.name}} Team</h5>
       <button (click)="closeTeamModal()" class="close-btn">&times;</button>
     </div>
 
     <div *ngIf="selectedProject.workedOn; else noTeamAssigned">
-      <!-- Team Info -->
-      <div class="team-info">
-        <h4>{{selectedProject.workedOn.name}}</h4>
-        <p>Department: {{selectedProject.workedOn.departement.name}}</p>
-      </div>
-
-      <!-- Manager -->
-      <div class="manager-section">
-        <h5>Manager</h5>
-        <div class="member-card">
-          <img [src]="getManagerPhoto()" alt="Manager" class="avatar" />
-          <div class="member-info">
-            <h6>{{selectedProject.workedOn.managedBY.fullName || 'No name'}}</h6>
-            <p>{{selectedProject.workedOn.managedBY.email}}</p>
-            <div class="roles">
-              <span class="badge" *ngFor="let role of selectedProject.workedOn.managedBY.roles">
-                {{role.name}}
-              </span>
-            </div>
+      <!-- Manager Section -->
+      <div class="team-manager">
+        <div class="team-position">Manager</div>
+        <div class="team-member-info">
+          <img [src]="getManagerPhoto()" 
+               class="member-avatar" 
+               alt="Manager photo"
+               onerror="this.src='assets/images/default-avatar.png';this.onerror=null;">
+          <div class="member-details">
+            <div class="member-name">{{selectedProject.workedOn.managedBY.fullName || 'No name'}}</div>
+            <div class="member-email">{{selectedProject.workedOn.managedBY.email}}</div>
+            <div class="member-department">{{selectedProject.workedOn.departement.name}}</div>
           </div>
         </div>
       </div>
 
       <!-- Team Members -->
-      <div class="members-section">
-        <div class="d-flex justify-content-between align-items-center">
-          <h5>Team Members ({{selectedProject.workedOn.members.length}})</h5>
-          <button class="btn btn-sm btn-success" (click)="openAddMemberModal()">
-            Add Member
+      <div class="team-members">
+        <div class="team-subtitle">
+          <span>Team Members ({{selectedProject.workedOn.members.length}})</span>
+          <button class="btn-add-member" (click)="openAddMemberModal()">
+            <i class="fas fa-plus"></i> Add
           </button>
         </div>
-        <div class="members-grid">
-          <div class="member-card" *ngFor="let member of selectedProject.workedOn.members">
-            <img [src]="getMemberPhoto(member)" alt="Member" class="avatar" />
+        
+        <div class="member-list">
+          <div class="member-item" *ngFor="let member of selectedProject.workedOn.members">
+            <img [src]="getMemberPhoto(member)" 
+                 class="member-avatar" 
+                 alt="Member photo"
+                 onerror="this.src='assets/images/default-avatar.png';this.onerror=null;">
             <div class="member-info">
-              <h6>{{member.fullName || 'No name'}}</h6>
-              <p>{{member.email}}</p>
-              <div class="roles">
-                <span class="badge" *ngFor="let role of member.roles">{{role.name}}</span>
-              </div>
+              <div class="member-name">{{member.fullName || 'No name'}}</div>
+              <div class="member-role">{{ member.roles.length > 0 ? member.roles[0].name : 'Member' }}</div>
+              <div class="member-email">{{member.email}}</div>
             </div>
+            <button class="btn-view">View</button>
           </div>
         </div>
       </div>
-
     </div>
 
-    <!-- If no team -->
     <ng-template #noTeamAssigned>
       <div class="no-team">
         <p>No team assigned to this project</p>
-        <button class="btn btn-primary" (click)="loadAvailableTeams()">Assign a Team</button>
-      </div>
-
-      <div *ngIf="isAssignTeamModalOpen" class="assign-team-modal mt-3">
-        <h5>Assign Team</h5>
-        <select [(ngModel)]="selectedTeamId" class="form-select">
-          <option [value]="null">Select a team</option>
-          <option *ngFor="let team of availableTeams" [value]="team.team_id">
-            {{team.name}} ({{team.departement.name}})
-          </option>
-        </select>
-        <button (click)="assignTeamToProject()" class="btn btn-success mt-2">Confirm Assignment</button>
+        <button class="btn-assign" (click)="loadAvailableTeams()">Assign Team</button>
       </div>
     </ng-template>
   </div>
 </div>
 
-<!-- Add Member Modal -->
-<div class="modal-overlay" *ngIf="isAddMemberModalOpen" (click)="closeAddMemberModal()"></div>
-<div class="modal-content-wrapper" *ngIf="isAddMemberModalOpen">
+<!-- Assign Team Modal -->
+<div class="modal-overlay" *ngIf="isAssignTeamModalOpen" (click)="closeTeamModal()"></div>
+<div class="modal-content-wrapper assign-team-modal" *ngIf="isAssignTeamModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Add Member to Team</h3>
-      <button (click)="closeAddMemberModal()" class="close-btn">&times;</button>
+      <h3 class="modal-title">Assign Team to Project</h3>
+      <button (click)="closeTeamModal()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
+
     <div class="modal-body">
-      <div class="form-group">
-        <label for="userSelect">Select User</label>
-        <select
-          id="userSelect"
-          [(ngModel)]="selectedUserId"
-          class="form-select"
-          required
-        >
-          <option [value]="null" disabled selected>Select a user</option>
-          <option *ngFor="let user of availableUsers" [value]="user.id">
-            {{user.fullName}} ({{user.email}})
-          </option>
-        </select>
-      </div>
-      <div class="modal-actions mt-3">
-        <button type="button" class="btn btn-secondary" (click)="closeAddMemberModal()">
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          (click)="addMemberToTeam()"
-          [disabled]="!selectedUserId"
-        >
-          Add Member
-        </button>
-      </div>
+      <label for="teamSelect" class="form-label">Select a Team</label>
+      <select id="teamSelect" [(ngModel)]="selectedTeamId" class="form-select">
+        <option [value]="null" disabled>Select team...</option>
+        <option *ngFor="let team of availableTeams" [value]="team.team_id">{{ team.name }}</option>
+      </select>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="closeTeamModal()">Cancel</button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="assignTeamToProject()"
+        [disabled]="!selectedTeamId"
+      >
+        Assign Team
+      </button>
     </div>
   </div>
 </div>
 
+<!-- Add Member Modal -->
+<div class="modal-overlay" *ngIf="isAddMemberModalOpen" (click)="closeAddMemberModal()"></div>
+<div class="modal-content-wrapper add-member-modal" *ngIf="isAddMemberModalOpen">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New Member</h3>
+      <button (click)="closeAddMemberModal()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="userSelect" class="form-label">Select Team Member</label>
+        <div class="select-wrapper">
+          <select
+            id="userSelect"
+            [(ngModel)]="selectedUserId"
+            name="userId"
+            class="form-select"
+            required
+          >
+            <option [ngValue]="null" disabled selected>Choose a team member...</option>
+            <option
+              *ngFor="let user of availableUsers"
+              [ngValue]="user.id"
+            >
+              {{ user.fullName.trim() ? user.fullName.trim() : user.email }}
+            </option>
+          </select>
+          <i class="fas fa-chevron-down select-arrow"></i>
+        </div>
+        <div class="form-hint">Select a user from the available team members</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="closeAddMemberModal()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="addMemberToTeam()"
+        [disabled]="!selectedUserId"
+      >
+        <i class="fas fa-user-plus"></i> Add Member
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Create Project Modal -->
 <div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()"></div>
-<div class="modal-content-wrapper" *ngIf="isCreateModalOpen">
+<div class="modal-content-wrapper create-project-modal" *ngIf="isCreateModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Create Project</h3>
-      <button (click)="closeCreateModal()" class="close-btn">&times;</button>
+      <h3 class="modal-title">Create New Project</h3>
+      <button (click)="closeCreateModal()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
     <form (ngSubmit)="createProject()">
-      <div class="form-group">
-        <label>Project Name</label>
-        <input
-          type="text"
-          [(ngModel)]="newProject.name"
-          name="name"
-          required
-          class="form-control"
-        />
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="projectName" class="form-label">Project Name</label>
+          <input
+            type="text"
+            id="projectName"
+            [(ngModel)]="newProject.name"
+            name="name"
+            required
+            class="form-control"
+            placeholder="Enter project name"
+          />
+          <div class="form-hint">Choose a descriptive name for your project</div>
+        </div>
+        <div class="form-group">
+          <label for="projectDescription" class="form-label">Description</label>
+          <textarea
+            id="projectDescription"
+            [(ngModel)]="newProject.description"
+            name="description"
+            required
+            class="form-control"
+            placeholder="Enter project description"
+            rows="4"
+          ></textarea>
+          <div class="form-hint">Describe the purpose and scope of the project</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea
-          [(ngModel)]="newProject.description"
-          name="description"
-          required
-          class="form-control"
-        ></textarea>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" (click)="closeCreateModal()">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="closeCreateModal()">
           Cancel
         </button>
-        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-plus-circle"></i> Create Project
+        </button>
       </div>
     </form>
   </div>
@@ -243,37 +281,50 @@
 
 <!-- Edit Project Modal -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
-<div class="modal-content-wrapper" *ngIf="isModalOpen">
+<div class="modal-content-wrapper edit-project-modal" *ngIf="isModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h3>Edit Project</h3>
-      <button (click)="closeModal()" class="close-btn">&times;</button>
+      <h3 class="modal-title">Edit Project</h3>
+      <button (click)="closeModal()" class="close-btn">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
     <form (ngSubmit)="updateProject()">
-      <div class="form-group">
-        <label>Project Name</label>
-        <input
-          type="text"
-          [(ngModel)]="selectedProject.name"
-          name="editName"
-          required
-          class="form-control"
-        />
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="editProjectName" class="form-label">Project Name</label>
+          <input
+            type="text"
+            id="editProjectName"
+            [(ngModel)]="selectedProject.name"
+            name="editName"
+            required
+            class="form-control"
+            placeholder="Enter project name"
+          />
+          <div class="form-hint">Update the project name</div>
+        </div>
+        <div class="form-group">
+          <label for="editProjectDescription" class="form-label">Description</label>
+          <textarea
+            id="editProjectDescription"
+            [(ngModel)]="selectedProject.description"
+            name="editDescription"
+            required
+            class="form-control"
+            placeholder="Enter project description"
+            rows="4"
+          ></textarea>
+          <div class="form-hint">Update the project description</div>
+        </div>
       </div>
-      <div class="form-group">
-        <label>Description</label>
-        <textarea
-          [(ngModel)]="selectedProject.description"
-          name="editDescription"
-          required
-          class="form-control"
-        ></textarea>
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="closeModal()">
           Cancel
         </button>
-        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-save"></i> Save Changes
+        </button>
       </div>
     </form>
   </div>

@@ -1,6 +1,98 @@
 /* ================ */
 /* MODALS GENERAUX  */
 /* ================ */
+/* ================ */
+/* AVATARS STYLES */
+/* ================ */
+
+.member-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e2e8f0;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.team-manager .member-avatar {
+  width: 50px;
+  height: 50px;
+  border-color: #4299e1;
+}
+
+/* ================ */
+/* TEAM MEMBER LAYOUT */
+/* ================ */
+
+.team-member-info {
+  display: flex;
+  align-items: center;
+}
+
+.member-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.member-info {
+  flex-grow: 1;
+}
+
+/* Ajuste l’espace entre l’avatar et les infos pour les membres */
+.member-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ================ */
+/* FALLBACK AVATAR */
+/* ================ */
+
+.avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #4299e1;
+  color: white;
+  font-weight: 600;
+  font-size: 0.9rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+/* ================ */
+/* RESPONSIVE ADJUSTMENTS */
+/* ================ */
+
+@media (max-width: 576px) {
+  .member-avatar {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+  }
+
+  .team-manager .member-avatar {
+    width: 44px;
+    height: 44px;
+  }
+
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .btn-view {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+}
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -23,126 +115,330 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
 .modal-content {
-  padding: 20px;
+  display: flex;
+  flex-direction: column;
 }
 
 .close-btn {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
+  color: #a0aec0;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.close-btn:hover {
+  background-color: #f8f9fa;
+  color: #718096;
 }
 
 /* ================ */
-/* MODAL CREATE/EDIT */ 
+/* STRUCTURE MODALE COMMUNE */
 /* ================ */
-.modal-content-wrapper.create-edit-modal {
-  max-width: 600px; /* Taille intermédiaire pour les formulaires */
+.modal-header {
+  padding: 20px 25px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .form-group {
-    margin-bottom: 15px;
-    
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-    
-    input, textarea {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-    
-    textarea {
-      min-height: 100px;
-    }
-  }
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin: 0;
+}
 
-  .modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-  }
+.modal-body {
+  padding: 25px;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 15px 25px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
 }
 
 /* ================ */
-/* MODAL TEAM (COMPACTE) */
+/* FORMULAIRE COMMUN */
+/* ================ */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #4a5568;
+  font-size: 0.9rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: #4a5568;
+  background-color: #fff;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-control:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+}
+
+.form-control::placeholder {
+  color: #cbd5e0;
+}
+
+textarea.form-control {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.form-hint {
+  font-size: 0.8rem;
+  color: #718096;
+  margin-top: 6px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #a0aec0;
+  pointer-events: none;
+}
+
+/* ================ */
+/* BOUTONS COMMUNS */
+/* ================ */
+.btn {
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #4a5568;
+}
+
+.btn-outline:hover {
+  background: #f8fafc;
+  border-color: #cbd5e0;
+}
+
+.btn-primary {
+  background-color: #4299e1;
+  color: white;
+  border: none;
+}
+
+.btn-primary:hover {
+  background-color: #3182ce;
+}
+
+.btn-primary:disabled {
+  background-color: #bee3f8;
+  cursor: not-allowed;
+}
+
+/* ================ */
+/* TEAM MODAL */
 /* ================ */
 .modal-content-wrapper.team-modal {
-  max-width: 500px; /* Plus compacte */
-  max-height: 80vh;
-  padding: 15px;
+  max-width: 400px;
+  width: 90%;
+  max-height: 70vh;
+}
 
-  .modal-header {
-    padding: 10px 15px;
-    h3 {
-      font-size: 1.2rem;
-      margin: 0;
-    }
-  }
+.team-manager {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 15px;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #eee;
+}
 
-  .team-info, .manager-section, .members-section, .hierarchy-section {
-    margin-bottom: 15px;
-    
-    h4, h5 {
-      font-size: 1rem;
-      margin-bottom: 8px;
-    }
-  }
+.team-position {
+  font-weight: 600;
+  color: #333;
+  width: 80px;
+  font-size: 0.9rem;
+  padding-top: 2px;
+}
 
-  .member-card {
-    padding: 8px;
-    margin-bottom: 8px;
-    
-    .avatar {
-      width: 40px;
-      height: 40px;
-      margin-right: 10px;
-    }
-    
-    .member-info {
-      h6 {
-        font-size: 0.9rem;
-      }
-      
-      p {
-        font-size: 0.8rem;
-        margin: 3px 0;
-      }
-    }
-  }
+.team-member-info {
+  flex: 1;
+}
 
-  .members-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-  }
+.member-name {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 2px;
+  color: #222;
+}
 
-  .no-team, .assign-team-modal {
-    padding: 10px;
-    
-    .btn {
-      padding: 5px 10px;
-      font-size: 0.9rem;
-    }
-  }
+.member-email {
+  font-size: 0.8rem;
+  color: #666;
+  margin-bottom: 2px;
+}
 
-  .assign-team-modal {
-    select.form-select {
-      padding: 5px;
-      font-size: 0.9rem;
-    }
-    
-    .btn {
-      margin-top: 10px;
-    }
-  }
+.member-department {
+  font-size: 0.75rem;
+  color: #888;
+  font-style: italic;
+}
+
+.team-members {
+  padding: 10px 15px;
+}
+
+.team-subtitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.btn-add-member {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-add-member:hover {
+  background-color: #f0f7ff;
+}
+
+.member-list {
+  max-height: calc(70vh - 200px);
+  overflow-y: auto;
+}
+
+.member-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.member-item:last-child {
+  border-bottom: none;
+}
+
+.member-role {
+  font-size: 0.75rem;
+  color: #888;
+  margin: 2px 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btn-view {
+  background: none;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  color: #666;
+  margin-left: 10px;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.btn-view:hover {
+  background-color: #f8f9fa;
+}
+
+.no-team {
+  text-align: center;
+  padding: 30px 20px;
+}
+
+.no-team p {
+  color: #666;
+  margin-bottom: 15px;
+  font-size: 0.9rem;
+}
+
+.btn-assign {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-assign:hover {
+  background-color: #0069d9;
+}
+
+/* ================ */
+/* ADD MEMBER MODAL */
+/* ================ */
+.modal-content-wrapper.add-member-modal {
+  max-width: 500px;
+  width: 90%;
+}
+
+/* ================ */
+/* CREATE/EDIT PROJECT MODALS */
+/* ================ */
+.modal-content-wrapper.create-project-modal,
+.modal-content-wrapper.edit-project-modal {
+  max-width: 600px;
+  width: 90%;
 }
 
 /* ================ */
@@ -150,16 +446,88 @@
 /* ================ */
 .badge {
   display: inline-block;
-  padding: 3px 6px;
+  padding: 4px 8px;
   font-size: 0.75rem;
   border-radius: 4px;
   background-color: #e9ecef;
   color: #495057;
   margin-right: 5px;
-  
-  &.bg-primary {
-    background-color: #007bff;
-    color: white;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.badge.bg-primary {
+  background-color: #007bff;
+  color: white;
+}
+
+/* ================ */
+/* SCROLLBAR */
+/* ================ */
+.member-list::-webkit-scrollbar,
+.modal-content-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+
+.member-list::-webkit-scrollbar-track,
+.modal-content-wrapper::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.member-list::-webkit-scrollbar-thumb,
+.modal-content-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.member-list::-webkit-scrollbar-thumb:hover,
+.modal-content-wrapper::-webkit-scrollbar-thumb:hover {
+  background: #aaa;
+}
+
+/* ================ */
+/* RESPONSIVE ADJUSTMENTS */
+/* ================ */
+@media (max-width: 576px) {
+  .modal-content-wrapper {
+    width: 95%;
+    max-height: 85vh;
   }
   
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding: 15px !important;
+  }
+  
+  .team-manager {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .team-position {
+    width: 100%;
+  }
+  
+  .member-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .btn-view {
+    margin-left: 0;
+    align-self: flex-end;
+  }
+  
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }

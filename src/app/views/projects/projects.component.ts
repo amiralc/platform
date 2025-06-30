@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProjectService, Project, Team,User } from '../../services/project.service';
+import { ProjectService, Project, Team, User } from '../../services/project.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -25,15 +25,15 @@ export class ProjectsComponent implements OnInit {
   isAssignTeamModalOpen = false;
   isModalOpen = false;
   isCreateModalOpen = false;
+  projectToAssignTeam: Project | null = null;
 
   // Selected data
   selectedProject: Project = this.createEmptyProject();
   selectedTeamId: number | null = null;
   newProject: Project = this.createEmptyProject();
   isAddMemberModalOpen = false;
-availableUsers: User[] = [];
-selectedUserId: number | null = null;
-
+  availableUsers: User[] = [];
+  selectedUserId: number | null = null;
 
   constructor(
     private projectService: ProjectService,
@@ -67,13 +67,71 @@ selectedUserId: number | null = null;
 
   createProject(): void {
     this.projectService.createProject(this.newProject).subscribe({
-      next: () => {
+      next: (createdProject) => {
         this.toastr.success('Project created successfully!', 'Success');
+        this.newProject = this.createEmptyProject();
         this.closeCreateModal();
-        this.loadProjects();
+
+        // Ouvre la modal d'assignation de team après création
+        this.openAssignTeamModal(createdProject);
       },
       error: (err) => this.showError('Failed to create project', err)
     });
+  }
+
+  openAssignTeamModal(project: Project): void {
+    this.projectToAssignTeam = project;
+    this.projectService.getAvailableTeams().subscribe({
+      next: (teams) => {
+        this.availableTeams = teams;
+        this.isAssignTeamModalOpen = true;
+      },
+      error: (err) => this.showError('Failed to load teams', err)
+    });
+  }
+
+  // Méthode générique pour assigner une team à un projet donné
+  assignTeam(project: Project): void {
+    if (!this.selectedTeamId) {
+      this.toastr.warning('Please select a team first', 'Warning');
+      return;
+    }
+
+    this.projectService.assignProjectToTeam(project.project_id, this.selectedTeamId).subscribe({
+      next: (updatedProject) => {
+        this.toastr.success('Team assigned successfully!', 'Success');
+
+        // Met à jour le projet correct selon le contexte
+        if (this.projectToAssignTeam && project.project_id === this.projectToAssignTeam.project_id) {
+          this.projectToAssignTeam = null;
+          this.isAssignTeamModalOpen = false;
+        }
+        if (this.selectedProject && project.project_id === this.selectedProject.project_id) {
+          this.selectedProject = updatedProject;
+          this.isAssignTeamModalOpen = false;
+        }
+
+        this.selectedTeamId = null;
+        this.loadProjects();
+      },
+      error: (err) => this.showError('Failed to assign team', err)
+    });
+  }
+
+  // Pour assigner une team à un projet déjà sélectionné (ex: édition)
+  assignTeamToProject(): void {
+    if (this.projectToAssignTeam) {
+      this.assignTeam(this.projectToAssignTeam);
+    } else {
+      this.assignTeam(this.selectedProject);
+    }
+  }
+
+  closeTeamModal(): void {
+    this.isTeamModalOpen = false;
+    this.isAssignTeamModalOpen = false;
+    this.selectedTeamId = null;
+    this.projectToAssignTeam = null;
   }
 
   openEditModal(project: Project): void {
@@ -108,12 +166,10 @@ selectedUserId: number | null = null;
     }
   }
 
-  // ------------------ TEAM MANAGEMENT ------------------
-
   viewTeam(project: Project): void {
     this.selectedProject = project;
     this.isTeamModalOpen = true;
-    
+
     if (!project.workedOn) {
       this.loadAvailableTeams();
     }
@@ -130,32 +186,6 @@ selectedUserId: number | null = null;
         console.error(err);
       }
     });
-  }
-
-  assignTeamToProject(): void {
-    if (!this.selectedTeamId) {
-      this.toastr.warning('Please select a team first', 'Warning');
-      return;
-    }
-
-    this.projectService.assignProjectToTeam(
-      this.selectedProject.project_id,
-      this.selectedTeamId
-    ).subscribe({
-      next: (updatedProject) => {
-        this.selectedProject = updatedProject;
-        this.isAssignTeamModalOpen = false;
-        this.toastr.success('Team assigned successfully!', 'Success');
-        this.loadProjects();
-      },
-      error: (err) => this.showError('Failed to assign team', err)
-    });
-  }
-
-  closeTeamModal(): void {
-    this.isTeamModalOpen = false;
-    this.isAssignTeamModalOpen = false;
-    this.selectedTeamId = null;
   }
 
   // ------------------ UTILS ------------------
@@ -196,63 +226,62 @@ selectedUserId: number | null = null;
       project.description.toLowerCase().includes(term)
     );
   }
+
   openAddMemberModal(): void {
-  this.projectService.getAvailableUsers().subscribe({
-    next: (users) => {
-      this.availableUsers = users;
-      console.log(users)
-      this.isAddMemberModalOpen = true;
-    },
-    error: (err) => this.showError('Failed to load users', err)
-  });
-}
-closeAddMemberModal(): void {
-  this.isAddMemberModalOpen = false;
-  this.selectedUserId = null;
-}
-getCurrentTeamId(): number | null {
-  return this.selectedProject.workedOn?.team_id || null;
-}
-addMemberToTeam(): void {
-  const token = localStorage.getItem('token');
-  console.log("Token utilisé :", token); // Ou votre méthode de récupération du token
-  if (!token) {
-    this.toastr.error('Authentication required', 'Error');
-    return;
-  }
-
-  if (!this.selectedUserId || !this.selectedProject.workedOn) {
-    this.toastr.warning('Please select a user first', 'Warning');
-    return;
-  }
-console.log("selected user id",this.selectedUserId)
-console.log("selected project worked on team", this.selectedProject.workedOn.team_id)
-  this.projectService.assignUserToTeam(
-    this.selectedUserId,
-    this.selectedProject.workedOn.team_id,
-    token
-  ).subscribe({
-    next: () => {
-      this.toastr.success('Member added successfully!', 'Success');
-      // Recharger les données de l'équipe
-      this.loadTeamData();
-      this.closeAddMemberModal();
-    },
-    error: (err) => this.showError('Failed to add member', err)
-  });
-}
-
-// Méthode pour recharger les données de l'équipe
-private loadTeamData(): void {
-  if (this.selectedProject?.project_id) {
-    this.projectService.getProjectById(this.selectedProject.project_id).subscribe({
-      next: (project) => {
-        this.selectedProject = project;
+    this.projectService.getAvailableUsers().subscribe({
+      next: (users) => {
+        this.availableUsers = users;
+        this.isAddMemberModalOpen = true;
       },
-      error: (err) => this.showError('Failed to refresh team data', err)
+      error: (err) => this.showError('Failed to load users', err)
     });
   }
-}
+
+  closeAddMemberModal(): void {
+    this.isAddMemberModalOpen = false;
+    this.selectedUserId = null;
+  }
+
+  getCurrentTeamId(): number | null {
+    return this.selectedProject.workedOn?.team_id || null;
+  }
+
+  addMemberToTeam(): void {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      this.toastr.error('Authentication required', 'Error');
+      return;
+    }
+
+    if (!this.selectedUserId || !this.selectedProject.workedOn) {
+      this.toastr.warning('Please select a user first', 'Warning');
+      return;
+    }
+
+    this.projectService.assignUserToTeam(
+      this.selectedUserId,
+      this.selectedProject.workedOn.team_id,
+      token
+    ).subscribe({
+      next: (responseText: string) => {
+        this.toastr.success(responseText, 'Success');
+        this.loadTeamData();
+        this.closeAddMemberModal();
+      },
+      error: (err) => this.showError('Failed to add member', err)
+    });
+  }
+
+  private loadTeamData(): void {
+    if (this.selectedProject?.project_id) {
+      this.projectService.getProjectById(this.selectedProject.project_id).subscribe({
+        next: (project) => {
+          this.selectedProject = project;
+        },
+        error: (err) => this.showError('Failed to refresh team data', err)
+      });
+    }
+  }
 
   trackByProjectId(index: number, project: Project): number {
     return project.project_id;
