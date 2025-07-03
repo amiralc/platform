@@ -48,6 +48,7 @@ export interface AssignTeamRequest {
   teamId: number;
 }
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -113,5 +114,9 @@ export class ProjectService {
 getAvailableUsers(): Observable<User[]> {
   return this.http.get<User[]>(`${this.apiUrl}/users/available`);
 }
+getUsersByIds(userIds: number[]): Observable<User[]> {
+  return this.http.post<User[]>(`${this.apiUrl}/users/by-ids`, { userIds });
+}
+
 
 }

@@ -1,4 +1,5 @@
 <div class="container mt-4">
+  <!-- Première ligne : Stats principales -->
   <div class="row">
     <div class="col-md-8">
       <div class="card shadow mb-4">
@@ -44,17 +45,94 @@
               <span>{{ stat.status }}:</span>
               <strong>{{ stat.count }}</strong>
             </div>
-          <div class="progress mt-1">
-  <div class="progress-bar" 
-       [ngClass]="{
-         'bg-secondary': stat.status === 'OPEN',
-         'bg-primary': stat.status === 'IN_PROGRESS',
-         'bg-success': stat.status === 'RESOLVED',
-         'bg-danger': stat.status === 'CLOSED'
-       }"
-       [style.width.%]="(stat.count / getTotalTickets()) * 100">
+            <div class="progress mt-1">
+              <div class="progress-bar" 
+                   [ngClass]="{
+                     'bg-secondary': stat.status === 'OPEN',
+                     'bg-primary': stat.status === 'IN_PROGRESS',
+                     'bg-success': stat.status === 'RESOLVED',
+                     'bg-danger': stat.status === 'CLOSED'
+                   }"
+                   [style.width.%]="(stat.count / getTotalTickets()) * 100">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+
+  <!-- Deuxième ligne : Assignations par utilisateur -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card shadow">
+        <div class="card-header bg-warning text-dark  p-1"> 
+          <h5 class="mb-0">Tickets Assignments by User</h5>
+        </div>
+        <div class="card-body p-0">
+          <!-- Loader -->
+          <div *ngIf="isLoadingAssignments" class="text-center py-4">
+            <div class="spinner-border text-warning" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <!-- Graphique et tableau -->
+          <div *ngIf="!isLoadingAssignments">
+            <div class="chart-container"style="height: 120px; margin-bottom: -4px;">
+              <canvas id="assignmentChart"></canvas>
+            </div>
+
+            <div class="table-responsive mt-0">
+              <table class="table table-hover table-striped mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th>User</th>
+                    <th width="120">Assigned Tickets</th>
+                    <th width="250">Workload Distribution</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let stat of assignmentStats">
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <div class="me-2">
+                          <i class="bi bi-person-circle fs-4"></i>
+                        </div>
+                        <div>
+                          <div>{{ getUserName(stat) }}</div>
+                          <div class="text-muted small">
+                            {{ stat.user?.email || 'No email available' }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="text-center">
+                      <span class="badge bg-warning text-dark fs-6">
+                        {{ stat.count }}
+                      </span>
+                    </td>
+                    <td>
+                      <div class="progress" style="height: 24px;">
+                        <div class="progress-bar bg-warning" 
+                             role="progressbar"
+                             [style.width.%]="(stat.count / getMaxAssignment()) * 100"
+                             [attr.aria-valuenow]="stat.count"
+                             aria-valuemin="0"
+                             [attr.aria-valuemax]="getMaxAssignment()">
+                          {{ (stat.count / getMaxAssignment()) * 100 | number:'1.0-0' }}%
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr *ngIf="assignmentStats.length === 0">
+                    <td colspan="3" class="text-center text-muted">
+                      No assigned tickets found
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
