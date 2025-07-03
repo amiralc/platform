@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { TicketJira } from './ticket-jira.service';
 
 export interface User {
   id: number;
@@ -112,4 +113,5 @@ export class ProjectService {
 getAvailableUsers(): Observable<User[]> {
   return this.http.get<User[]>(`${this.apiUrl}/users/available`);
 }
+
 }

@@ -50,4 +50,10 @@ createTicket(ticket: TicketJira): Observable<TicketJira> {
   deleteTicket(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
+  getStatusStatistics(): Observable<Map<string, number>> {
+    return this.http.get<Map<string, number>>(`${this.baseUrl}/stats`);
+  }
+    getResolvedClosedTickets(): Observable<TicketJira[]> {
+    return this.http.get<TicketJira[]>(`${this.baseUrl}/resolved-closed`);
+  }
 }
