@@ -22,7 +22,7 @@
           <div class="row mt-3">
             <div class="col text-end">
               <button class="btn btn-primary" (click)="openCreateModal()">
-                Create Project
+                <i class="fas fa-plus"></i> New
               </button>
             </div>
           </div>
@@ -59,19 +59,21 @@
                     class="btn btn-sm btn-info"
                     (click)="viewTeam(project)"
                     [disabled]="!project.workedOn"
+                    title="View Team"
                   >
-                    View Team
+                    <i class="fas fa-eye"></i>
                   </button>
                 </td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(project)">
-                    Edit
+                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(project)" title="Edit">
+                    <i class="fas fa-edit"></i>
                   </button>
                   <button
                     class="btn btn-sm btn-danger"
                     (click)="confirmDelete(project.project_id)"
+                    title="Delete"
                   >
-                    Delete
+                    <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
               </tr>

@@ -47,12 +47,15 @@ export class TaskComponent implements OnInit {
     this.loadProjects();
   }
 
-  loadTickets(): void {
-    this.ticketService.getAllTickets().subscribe({
-      next: (data) => (this.tickets = data),
-      error: (err) => console.error('Erreur lors du chargement des tickets', err),
-    });
-  }
+loadTickets(): void {
+  this.ticketService.getAllTickets().subscribe({
+    next: (data) => {
+      console.log('Données des tickets:', data); // Vérifiez la structure
+      this.tickets = data;
+    },
+    error: (err) => console.error('Erreur lors du chargement des tickets', err),
+  });
+}
 
   loadProjects(): void {
     this.ticketService.getProjects().subscribe({
@@ -64,11 +67,17 @@ export class TaskComponent implements OnInit {
       error: (err) => console.error('Erreur chargement projets', err),
     });
   }
-
-  getProjectName(projectId: number | undefined): string {
-  const project = this.projects.find((p) => p.project_id === projectId);
+getProjectName(projectId: number | undefined): string {
+  if (!projectId) return 'Inconnu';
   
-  return project && project.name ? project.name : 'Inconnu';
+  const project = this.projects.find(p => p.project_id === projectId);
+  
+  if (!project) {
+    console.warn(`Projet non trouvé pour l'ID: ${projectId}`);
+    return 'Inconnu';
+  }
+  
+  return project.name || 'Inconnu';
 }
 
 

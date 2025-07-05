@@ -49,12 +49,20 @@ export class ProjectsComponent implements OnInit {
   loadProjects(): void {
     this.projectService.getProjects().subscribe({
       next: (projects) => {
+        console.log('Projects with tickets:', projects);
         this.projects = projects;
         this.filteredProjects = [...projects];
       },
       error: (err) => this.showError('Failed to load projects', err)
     });
   }
+  getTicketDisplay(ticket: any): string {
+  if (typeof ticket === 'string') return ticket;
+  if (ticket.title) return ticket.title;
+  if (ticket.name) return ticket.name;
+  if (ticket.id) return `Ticket #${ticket.id}`;
+  return 'Ticket';
+}
 
   openCreateModal(): void {
     this.newProject = this.createEmptyProject();
@@ -71,8 +79,6 @@ export class ProjectsComponent implements OnInit {
         this.toastr.success('Project created successfully!', 'Success');
         this.newProject = this.createEmptyProject();
         this.closeCreateModal();
-
-        // Ouvre la modal d'assignation de team après création
         this.openAssignTeamModal(createdProject);
       },
       error: (err) => this.showError('Failed to create project', err)
@@ -90,7 +96,6 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  // Méthode générique pour assigner une team à un projet donné
   assignTeam(project: Project): void {
     if (!this.selectedTeamId) {
       this.toastr.warning('Please select a team first', 'Warning');
@@ -118,7 +123,7 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  // Pour assigner une team à un projet déjà sélectionné (ex: édition)
+
   assignTeamToProject(): void {
     if (this.projectToAssignTeam) {
       this.assignTeam(this.projectToAssignTeam);

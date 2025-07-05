@@ -34,17 +34,12 @@ interface ApiAssignmentStat {
   imports: [CommonModule, FormsModule]
 })
 export class StatisticsComponent implements OnInit {
-  // Données des statistiques
   statusStats: StatusStat[] = [];
   recentResolvedTickets: any[] = [];
   projects: any[] = [];
   assignmentStats: AssignmentStat[] = [];
-  
-  // États de chargement
   isLoadingStats = false;
   isLoadingAssignments = false;
-  
-  // Graphiques
   statusChart: any;
   assignmentChart: any;
 
@@ -62,8 +57,6 @@ export class StatisticsComponent implements OnInit {
   loadAllData(): void {
     this.isLoadingStats = true;
     this.isLoadingAssignments = true;
-
-    // Chargement parallèle des données
     this.ticketService.getStatusStatistics().subscribe({
       next: (stats) => {
         this.statusStats = Object.entries(stats).map(([status, count]) => ({ status, count }));
@@ -126,7 +119,7 @@ export class StatisticsComponent implements OnInit {
       count: item.ticketCount,
       user: {
         email: item.userName,
-        firstname: item.userName.split('@')[0] // Extraction du prénom depuis l'email
+        firstname: item.userName.split('@')[0] 
       }
     }));
     this.createAssignmentChart();

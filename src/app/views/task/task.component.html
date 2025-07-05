@@ -11,7 +11,9 @@
               <h3 class="mb-0">Jira Ticket Management</h3>
             </div>
             <div class="col text-end">
-              <button class="btn btn-primary" (click)="openCreateModal()">Create Ticket</button>
+              <button class="btn btn-primary" (click)="openCreateModal()">
+                <i class="fas fa-plus"></i> New Ticket
+              </button>
             </div>
           </div>
         </div>
@@ -45,13 +47,19 @@
                   </span>
                 </td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)">Edit</button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)">Delete</button>
+                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)" title="Delete">
+                    <i class="fas fa-trash-alt"></i>
+                  </button>
                 </td>
               </tr>
             </tbody>
           </table>
-          <div *ngIf="tickets.length === 0" class="alert alert-info m-3">No tickets available</div>
+          <div *ngIf="tickets.length === 0" class="alert alert-info m-3">
+            <i class="fas fa-info-circle me-2"></i>No tickets available
+          </div>
         </div>
 
       </div>
@@ -63,47 +71,61 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Create Ticket</h5>
+          <h5 class="modal-title">
+            <i class="fas fa-plus-circle me-2"></i>Create Ticket
+          </h5>
           <button type="button" class="btn-close" (click)="closeCreateModal()"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="createForm">
             <div class="mb-3">
-              <label>Title</label>
+              <label><i class="fas fa-heading me-1"></i>Title</label>
               <input type="text" class="form-control" formControlName="title" />
-              <div *ngIf="createForm.get('title')?.invalid && createForm.get('title')?.touched" class="text-danger">Title is required</div>
+              <div *ngIf="createForm.get('title')?.invalid && createForm.get('title')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Title is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Description</label>
+              <label><i class="fas fa-align-left me-1"></i>Description</label>
               <textarea class="form-control" formControlName="description" rows="3"></textarea>
-              <div *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched" class="text-danger">Description is required</div>
+              <div *ngIf="createForm.get('description')?.invalid && createForm.get('description')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Description is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Project</label>
+              <label><i class="fas fa-project-diagram me-1"></i>Project</label>
               <select class="form-control" formControlName="projectId">
                 <option value="">-- Select a Project --</option>
                 <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
               </select>
-              <div *ngIf="createForm.get('projectId')?.invalid && createForm.get('projectId')?.touched" class="text-danger">Project is required</div>
+              <div *ngIf="createForm.get('projectId')?.invalid && createForm.get('projectId')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Project is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Status</label>
+              <label><i class="fas fa-tasks me-1"></i>Status</label>
               <select class="form-control" formControlName="status">
                 <option value="OPEN">OPEN</option>
                 <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="CLOSED">CLOSED</option>
               </select>
-              <div *ngIf="createForm.get('status')?.invalid && createForm.get('status')?.touched" class="text-danger">Status is required</div>
+              <div *ngIf="createForm.get('status')?.invalid && createForm.get('status')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Status is required
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="closeCreateModal()">Cancel</button>
-          <button class="btn btn-primary" [disabled]="createForm.invalid" (click)="addTicket()">Create</button>
+          <button class="btn btn-secondary" (click)="closeCreateModal()">
+            <i class="fas fa-times me-1"></i>Cancel
+          </button>
+          <button class="btn btn-primary" [disabled]="createForm.invalid" (click)="addTicket()">
+            <i class="fas fa-plus-circle me-1"></i>Create
+          </button>
         </div>
       </div>
     </div>
@@ -115,46 +137,60 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Edit Ticket</h5>
+          <h5 class="modal-title">
+            <i class="fas fa-edit me-2"></i>Edit Ticket
+          </h5>
           <button type="button" class="btn-close" (click)="closeModal()"></button>
         </div>
         <div class="modal-body">
           <form [formGroup]="editForm">
             <div class="mb-3">
-              <label>Title</label>
+              <label><i class="fas fa-heading me-1"></i>Title</label>
               <input type="text" class="form-control" formControlName="title" />
-              <div *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="text-danger">Title is required</div>
+              <div *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Title is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Description</label>
+              <label><i class="fas fa-align-left me-1"></i>Description</label>
               <textarea class="form-control" formControlName="description" rows="3"></textarea>
-              <div *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="text-danger">Description is required</div>
+              <div *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Description is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Project</label>
+              <label><i class="fas fa-project-diagram me-1"></i>Project</label>
               <select class="form-control" formControlName="projectId">
                 <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
               </select>
-              <div *ngIf="editForm.get('projectId')?.invalid && editForm.get('projectId')?.touched" class="text-danger">Project is required</div>
+              <div *ngIf="editForm.get('projectId')?.invalid && editForm.get('projectId')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Project is required
+              </div>
             </div>
 
             <div class="mb-3">
-              <label>Status</label>
+              <label><i class="fas fa-tasks me-1"></i>Status</label>
               <select class="form-control" formControlName="status">
                 <option value="OPEN">OPEN</option>
                 <option value="IN_PROGRESS">IN_PROGRESS</option>
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="CLOSED">CLOSED</option>
               </select>
-              <div *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched" class="text-danger">Status is required</div>
+              <div *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Status is required
+              </div>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
-          <button class="btn btn-primary" [disabled]="editForm.invalid" (click)="updateTicket()">Save</button>
+          <button class="btn btn-secondary" (click)="closeModal()">
+            <i class="fas fa-times me-1"></i>Cancel
+          </button>
+          <button class="btn btn-primary" [disabled]="editForm.invalid" (click)="updateTicket()">
+            <i class="fas fa-save me-1"></i>Save
+          </button>
         </div>
       </div>
     </div>
