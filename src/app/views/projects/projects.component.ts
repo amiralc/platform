@@ -15,10 +15,15 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
+    Math = Math;
   projects: Project[] = [];
   filteredProjects: Project[] = [];
   availableTeams: Team[] = [];
   searchTerm: string = '';
+  // Nouveaux champs pour la pagination
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
 
   // Modal states
   isTeamModalOpen = false;
@@ -52,9 +57,43 @@ export class ProjectsComponent implements OnInit {
         console.log('Projects with tickets:', projects);
         this.projects = projects;
         this.filteredProjects = [...projects];
+        this.totalItems = projects.length;
       },
       error: (err) => this.showError('Failed to load projects', err)
     });
+  }
+    get paginatedProjects(): Project[] {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredProjects.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+    get totalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
+    get pages(): number[] {
+    const pagesToShow = 5; // Nombre max de pages à afficher
+    let startPage = Math.max(1, this.currentPage - Math.floor(pagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + pagesToShow - 1);
+
+    if (endPage - startPage + 1 < pagesToShow) {
+      startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    return Array.from({length: endPage - startPage + 1}, (_, i) => startPage + i);
+  }
+
+  goToPage(page: number): void {
+    this.currentPage = page;
+  }
+    nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+    }
   }
   getTicketDisplay(ticket: any): string {
   if (typeof ticket === 'string') return ticket;
@@ -230,6 +269,8 @@ export class ProjectsComponent implements OnInit {
       project.name.toLowerCase().includes(term) ||
       project.description.toLowerCase().includes(term)
     );
+     this.totalItems = this.filteredProjects.length;
+    this.currentPage = 1;
   }
 
   openAddMemberModal(): void {

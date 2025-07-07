@@ -28,7 +28,7 @@
           </div>
         </div>
 
-        <!-- Projects Table -->
+        <!-- Projects Table with Pagination -->
         <div class="table-responsive">
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
@@ -41,16 +41,16 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let project of filteredProjects; trackBy: trackByProjectId">
+              <tr *ngFor="let project of paginatedProjects; trackBy: trackByProjectId">
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
                 <td>
-                  <ng-container *ngIf="project.tickets?.length; else emptyTickets">
-                    <span *ngFor="let ticket of project.tickets" class="badge bg-primary me-1">
-                      {{ ticket }}
-                    </span>
+                  <ng-container *ngIf="project.tickets?.length; else noTickets">
+                    <div *ngFor="let ticket of project.tickets" class="badge bg-secondary me-1 mb-1">
+                      {{ ticket.title || '#'+ticket.ticket_jira_id }}
+                    </div>
                   </ng-container>
-                  <ng-template #emptyTickets>
+                  <ng-template #noTickets>
                     <span class="text-muted">No tickets</span>
                   </ng-template>
                 </td>
@@ -79,6 +79,39 @@
               </tr>
             </tbody>
           </table>
+
+          <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center p-3 border-top">
+            <div class="text-muted small">
+              Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+              {{ Math.min(currentPage * itemsPerPage, totalItems) }} of {{ totalItems }} entries
+            </div>
+            
+            <div>
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="previousPage()">&laquo;</a>
+                </li>
+                <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+                  <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="nextPage()">&raquo;</a>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="d-flex align-items-center">
+              <span class="me-2 small">Show:</span>
+              <select class="form-select form-select-sm" style="width: 70px;" 
+                      [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -86,7 +119,7 @@
   </div>
 </div>
 
-<!-- Team Modal -->
+<!-- Team Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isTeamModalOpen" (click)="closeTeamModal()"></div>
 <div class="modal-content-wrapper team-modal" *ngIf="isTeamModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
@@ -147,7 +180,7 @@
   </div>
 </div>
 
-<!-- Assign Team Modal -->
+<!-- Assign Team Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isAssignTeamModalOpen" (click)="closeTeamModal()"></div>
 <div class="modal-content-wrapper assign-team-modal" *ngIf="isAssignTeamModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
@@ -180,7 +213,7 @@
   </div>
 </div>
 
-<!-- Add Member Modal -->
+<!-- Add Member Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isAddMemberModalOpen" (click)="closeAddMemberModal()"></div>
 <div class="modal-content-wrapper add-member-modal" *ngIf="isAddMemberModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
@@ -230,7 +263,7 @@
   </div>
 </div>
 
-<!-- Create Project Modal -->
+<!-- Create Project Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()"></div>
 <div class="modal-content-wrapper create-project-modal" *ngIf="isCreateModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
@@ -281,7 +314,7 @@
   </div>
 </div>
 
-<!-- Edit Project Modal -->
+<!-- Edit Project Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
 <div class="modal-content-wrapper edit-project-modal" *ngIf="isModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">

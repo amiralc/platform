@@ -10,9 +10,10 @@
             <div class="col">
               <h3 class="mb-0">Jira Ticket Management</h3>
             </div>
+            <div class="row mt-3"></div>
             <div class="col text-end">
               <button class="btn btn-primary" (click)="openCreateModal()">
-                <i class="fas fa-plus"></i> New Ticket
+                <i class="fas fa-plus"></i> New 
               </button>
             </div>
           </div>
@@ -31,7 +32,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let ticket of tickets; trackBy: trackByTicketId">
+             <tr *ngFor="let ticket of paginatedTickets; trackBy: trackByTicketId">
                 <td>{{ ticket.title }}</td>
                 <td>{{ ticket.description }}</td>
                 <td>{{ getProjectName(ticket.project?.project_id) }}</td>
@@ -57,6 +58,40 @@
               </tr>
             </tbody>
           </table>
+
+           <!-- Pagination -->
+          <div class="d-flex justify-content-between align-items-center p-3 border-top">
+            <div class="text-muted small">
+              Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
+              {{ getVisibleEnd() }} of {{ totalItems }} tickets
+            </div>
+            
+            <div>
+              <ul class="pagination pagination-sm mb-0">
+                <li class="page-item" [class.disabled]="currentPage === 1">
+                  <a class="page-link" (click)="previousPage()">&laquo;</a>
+                </li>
+                <li class="page-item" *ngFor="let page of pages" [class.active]="page === currentPage">
+                  <a class="page-link" (click)="goToPage(page)">{{ page }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="currentPage === totalPages">
+                  <a class="page-link" (click)="nextPage()">&raquo;</a>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="d-flex align-items-center">
+              <span class="me-2 small">Show:</span>
+              <select class="form-select form-select-sm" style="width: 70px;" 
+                      [(ngModel)]="itemsPerPage" (change)="currentPage = 1">
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </div>
+
           <div *ngIf="tickets.length === 0" class="alert alert-info m-3">
             <i class="fas fa-info-circle me-2"></i>No tickets available
           </div>

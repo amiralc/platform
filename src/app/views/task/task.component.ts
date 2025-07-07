@@ -14,7 +14,11 @@ import { TicketJiraService, TicketJira, Project } from '../../services/ticket-ji
 })
 export class TaskComponent implements OnInit {
   tickets: TicketJira[] = [];
+  paginatedTickets: TicketJira[] = []; // Changement: tableau au lieu de getter
   projects: Project[] = [];
+  currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
 
   createForm: FormGroup;
   editForm: FormGroup;
@@ -47,15 +51,63 @@ export class TaskComponent implements OnInit {
     this.loadProjects();
   }
 
-loadTickets(): void {
-  this.ticketService.getAllTickets().subscribe({
-    next: (data) => {
-      console.log('Données des tickets:', data); // Vérifiez la structure
-      this.tickets = data;
-    },
-    error: (err) => console.error('Erreur lors du chargement des tickets', err),
-  });
-}
+  loadTickets(): void {
+    this.ticketService.getAllTickets().subscribe({
+      next: (data) => {
+        this.tickets = data;
+        this.totalItems = data.length;
+        this.refreshPaginatedData(); // Ajout: rafraîchir les données après chargement
+      },
+      error: (err) => console.error('Erreur lors du chargement des tickets', err),
+    });
+  }
+
+  // Nouvelle méthode pour rafraîchir les données paginées
+  refreshPaginatedData(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.paginatedTickets = this.tickets.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
+
+  get pages(): number[] {
+    const pagesToShow = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(pagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + pagesToShow - 1);
+
+    if (endPage - startPage + 1 < pagesToShow) {
+      startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    return Array.from({length: endPage - startPage + 1}, (_, i) => startPage + i);
+  }
+
+  getVisibleEnd(): number {
+    return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+  }
+
+  goToPage(page: number): void {
+    if (this.currentPage !== page) {
+      this.currentPage = page;
+      this.refreshPaginatedData(); // Ajout: rafraîchir les données après changement de page
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.refreshPaginatedData(); // Ajout: rafraîchir les données
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.refreshPaginatedData(); // Ajout: rafraîchir les données
+    }
+  }
 
   loadProjects(): void {
     this.ticketService.getProjects().subscribe({
@@ -67,19 +119,16 @@ loadTickets(): void {
       error: (err) => console.error('Erreur chargement projets', err),
     });
   }
-getProjectName(projectId: number | undefined): string {
-  if (!projectId) return 'Inconnu';
-  
-  const project = this.projects.find(p => p.project_id === projectId);
-  
-  if (!project) {
-    console.warn(`Projet non trouvé pour l'ID: ${projectId}`);
-    return 'Inconnu';
-  }
-  
-  return project.name || 'Inconnu';
-}
 
+  getProjectName(projectId: number | undefined): string {
+    if (!projectId) {
+        console.warn('Project ID is undefined for ticket');
+        return 'Non assigné'; // Ou tout autre texte par défaut
+    }
+    
+    const project = this.projects.find(p => p.project_id === projectId);
+    return project?.name || 'Projet inconnu';
+}
 
   openCreateModal(): void {
     this.isCreateModalOpen = true;

@@ -12,14 +12,13 @@ import { UserService, User } from '../../services/user.service';
 })
 export class UserlistComponent implements OnInit {
   users: User[] = [];
-
-  // Initialise selectedUser avec un objet User "vide" par défaut,
-  // pour éviter les erreurs de binding null
+   paginatedUsers: User[] = [];
   selectedUser: User = this.createEmptyUser();
-
   isModalOpen = false;
   isCreating = false;
-
+   currentPage: number = 1;
+  itemsPerPage: number = 10;
+  totalItems: number = 0;
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
@@ -27,10 +26,57 @@ export class UserlistComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (users) => this.users = users,
-      error: (err) => console.error('Failed to load users', err)
-    });
+  this.userService.getUsers().subscribe({
+    next: (users) => {
+      console.log('Users data received:', users); // Ajoutez ce log
+      this.users = users;
+      this.totalItems = users.length;
+      this.refreshPaginatedData();
+    },
+    error: (err) => console.error('Failed to load users', err)
+  });
+}
+    refreshPaginatedData(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    this.paginatedUsers = this.users.slice(startIndex, startIndex + this.itemsPerPage);
+  }
+    get totalPages(): number {
+    return Math.ceil(this.totalItems / this.itemsPerPage);
+  }
+
+  get pages(): number[] {
+    const pagesToShow = 5;
+    let startPage = Math.max(1, this.currentPage - Math.floor(pagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + pagesToShow - 1);
+
+    if (endPage - startPage + 1 < pagesToShow) {
+      startPage = Math.max(1, endPage - pagesToShow + 1);
+    }
+
+    return Array.from({length: endPage - startPage + 1}, (_, i) => startPage + i);
+  }
+   getVisibleEnd(): number {
+    return Math.min(this.currentPage * this.itemsPerPage, this.totalItems);
+  }
+
+  goToPage(page: number): void {
+    if (this.currentPage !== page) {
+      this.currentPage = page;
+      this.refreshPaginatedData();
+    }
+  }
+    nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.refreshPaginatedData();
+    }
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.refreshPaginatedData();
+    }
   }
 
   // Méthode utilitaire pour créer un utilisateur vide
@@ -65,16 +111,19 @@ export class UserlistComponent implements OnInit {
   }
 
   createUser(): void {
-    if (!this.selectedUser) return;
-
-    this.userService.createUser(this.selectedUser).subscribe({
-      next: () => {
-        this.loadUsers();
-        this.closeModal();
-      },
-      error: (err) => console.error('Failed to create user', err)
-    });
-  }
+  if (!this.selectedUser) return;
+  
+  console.log('Data being sent to API:', this.selectedUser); // Ajoutez ce log
+  
+  this.userService.createUser(this.selectedUser).subscribe({
+    next: (createdUser) => {
+      console.log('User created successfully:', createdUser); // Ajoutez ce log
+      this.loadUsers();
+      this.closeModal();
+    },
+    error: (err) => console.error('Failed to create user', err)
+  });
+}
 
   updateUser(): void {
     if (!this.selectedUser) return;
