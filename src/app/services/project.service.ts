@@ -14,6 +14,18 @@ export interface User {
   fullName: string;
   photoUrl?: string;
 }
+export interface Ticket {
+  ticket_jira_id: number;
+  title: string;
+  description: string;
+  status: string;
+  assignTo?: {
+    user_id: number;
+    fullName: string;
+    email: string;
+    photoUrl?: string;
+  };
+}
 
 export interface Department {
   department_id: number;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ProjectService, Project, Team, User } from '../../services/project.service';
+import { ProjectService, Project, Team, User,Ticket } from '../../services/project.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -15,6 +15,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./projects.component.scss']
 })
 export class ProjectsComponent implements OnInit {
+  
+  
     Math = Math;
   projects: Project[] = [];
   filteredProjects: Project[] = [];
@@ -24,6 +26,12 @@ export class ProjectsComponent implements OnInit {
   currentPage: number = 1;
   itemsPerPage: number = 10;
   totalItems: number = 0;
+  isTicketModalOpen = false;
+selectedTicket: Ticket = {
+  ticket_jira_id: 0,
+  title: '',
+  description: '',
+  status: 'OPEN'};
 
   // Modal states
   isTeamModalOpen = false;
@@ -332,4 +340,33 @@ export class ProjectsComponent implements OnInit {
   trackByProjectId(index: number, project: Project): number {
     return project.project_id;
   }
+  openTicketModal(ticket: any): void {
+  this.selectedTicket = {
+    ticket_jira_id: ticket.ticket_jira_id || 0,
+    title: ticket.title || 'No title',
+    description: ticket.description || 'No description',
+    status: ticket.status || 'OPEN',
+    assignTo: ticket.assignTo ? {
+      user_id: ticket.assignTo.user_id,
+      fullName: ticket.assignTo.fullName || '',
+      email: ticket.assignTo.email,
+      photoUrl: ticket.assignTo.photoUrl
+    } : undefined
+  };
+  this.isTicketModalOpen = true;
+}
+closeTicketModal(): void {
+  this.isTicketModalOpen = false;
+}
+
+getUserPhoto(user: any): string {
+  if (!user) return 'assets/images/default-avatar.png';
+  
+  // Si photoUrl existe et n'est pas vide
+  if (user.photoUrl && user.photoUrl.trim() !== '') {
+    return user.photoUrl + '?t=' + Date.now(); // Ajout timestamp pour éviter cache
+  }
+  
+  return 'assets/images/default-avatar.png';
+}
 }

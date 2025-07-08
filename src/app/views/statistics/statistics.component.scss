@@ -20,3 +20,64 @@ canvas {
   height: 8px;
   border-radius: 4px;
 }
+.bg-purple {
+  background-color: #6f42c1;
+}
+
+.text-purple {
+  color: #6f42c1;
+}
+
+.list-group-item {
+  padding: 0.75rem 1.25rem;
+}
+.bg-indigo {
+  background-color: #6610f2;
+}
+
+.text-indigo {
+  color: #6610f2;
+}
+
+.bg-gradient-indigo {
+  background-image: linear-gradient(to right, #6610f2, #9b59b6);
+}
+
+.chart-container {
+  position: relative;
+  min-height: 250px;
+}
+
+.progress {
+  overflow: visible;
+  background-color: #f0f2f5;
+}
+
+.progress-bar {
+  position: relative;
+  overflow: visible;
+  transition: width 0.6s ease;
+}
+
+.progress-bar:after {
+  content: '';
+  position: absolute;
+  right: -5px;
+  top: -2px;
+  height: 14px;
+  width: 14px;
+  background: inherit;
+  border-radius: 50%;
+}
+.bg-indigo {
+  background-color: #6610f2;
+}
+
+.text-indigo {
+  color: #6610f2;
+}
+
+.chart-container {
+  position: relative;
+  min-height: 250px;
+}

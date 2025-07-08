@@ -35,6 +35,46 @@
         </div>
       </div>
 
+      <!-- Nouvelle carte améliorée pour les tickets par projet -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-indigo text-white">
+          <h5 class="mb-0">Tickets par Projet</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="isLoadingProjects" class="text-center py-4">
+            <div class="spinner-border text-indigo" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+          
+          <div *ngIf="!isLoadingProjects">
+            <div class="chart-container" style="height: 250px;">
+              <canvas id="projectsChart"></canvas>
+            </div>
+            
+            <div class="mt-3">
+              <ul class="list-group list-group-flush">
+                <li *ngFor="let stat of projectsTicketStats" 
+                    class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-0">
+                  <div class="d-flex align-items-center">
+                    <span class="badge me-2" 
+                          [style.backgroundColor]="getChartColor(stat.projectName)">
+                      {{ stat.ticketCount }}
+                    </span>
+                    <span class="text-truncate" style="max-width: 120px;">
+                      {{ stat.projectName || 'Projet sans nom' }}
+                    </span>
+                  </div>
+                  <small class="text-muted">
+                    {{ (stat.ticketCount / getTotalProjectTickets()) * 100 | number:'1.0-0' }}%
+                  </small>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="card shadow">
         <div class="card-header bg-info text-white">
           <h5 class="mb-0">Quick Stats</h5>
@@ -66,7 +106,7 @@
   <div class="row mt-4">
     <div class="col-12">
       <div class="card shadow">
-        <div class="card-header bg-warning text-dark  p-1"> 
+        <div class="card-header bg-warning text-dark p-1"> 
           <h5 class="mb-0">Tickets Assignments by User</h5>
         </div>
         <div class="card-body p-0">
@@ -79,7 +119,7 @@
 
           <!-- Graphique et tableau -->
           <div *ngIf="!isLoadingAssignments">
-            <div class="chart-container"style="height: 120px; margin-bottom: -4px;">
+            <div class="chart-container" style="height: 120px; margin-bottom: -4px;">
               <canvas id="assignmentChart"></canvas>
             </div>
 

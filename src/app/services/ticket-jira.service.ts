@@ -87,4 +87,9 @@ getUserName(stat: AssignmentStat): string {
   }
   return `User ${stat.userId}`;
 }
+getProjectsWithTicketCount(): Observable<{projectName: string, ticketCount: number}[]> {
+  return this.http.get<{projectName: string, ticketCount: number}[]>(
+    `${this.URL}/stats/projects-ticket-count`
+  );
+}
 }

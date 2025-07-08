@@ -19,10 +19,18 @@ interface AssignmentStat {
     lastname?: string;
   };
 }
+interface ProjectTicketStat {
+  projectName: string;
+  ticketCount: number;
+}
 
 interface ApiAssignmentStat {
   userId: number;
   userName: string;
+  ticketCount: number;
+}
+interface ProjectTicketStat {
+  projectName: string;
   ticketCount: number;
 }
 
@@ -42,6 +50,9 @@ export class StatisticsComponent implements OnInit {
   isLoadingAssignments = false;
   statusChart: any;
   assignmentChart: any;
+  projectsTicketStats: ProjectTicketStat[] = [];
+isLoadingProjects = false;
+ projectsChart: Chart<'doughnut'> | undefined;
 
   constructor(
     private ticketService: TicketJiraService,
@@ -52,8 +63,81 @@ export class StatisticsComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllData();
+    this.loadProjectsTicketStats();
+  }
+loadProjectsTicketStats(): void {
+  this.isLoadingProjects = true;
+  this.ticketService.getProjectsWithTicketCount().subscribe({
+    next: (stats: ProjectTicketStat[]) => { // Ajout du type explicite
+      this.projectsTicketStats = stats;
+      this.isLoadingProjects = false;
+    },
+    error: (err) => {
+      console.error('Error loading projects stats', err);
+      this.isLoadingProjects = false;
+    }
+  });
+}
+getTotalProjectTickets(): number {
+  return this.projectsTicketStats.reduce((total, stat) => total + stat.ticketCount, 0);
+}
+
+getChartColor(projectName: string): string {
+  const colors = [
+    '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', 
+    '#e74a3b', '#6610f2', '#fd7e14', '#20c9a6'
+  ];
+  const index = Math.abs(this.hashCode(projectName)) % colors.length;
+  return colors[index];
+}
+
+private hashCode(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return hash;
+}
+
+createProjectsChart(): void {
+  const ctx = document.getElementById('projectsChart') as HTMLCanvasElement;
+  
+  if (this.projectsChart) {
+    this.projectsChart.destroy();
   }
 
+  this.projectsChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: this.projectsTicketStats.map(p => p.projectName),
+      datasets: [{
+        data: this.projectsTicketStats.map(p => p.ticketCount),
+        backgroundColor: this.projectsTicketStats.map(p => this.getChartColor(p.projectName)),
+        hoverBorderColor: "rgba(234, 236, 244, 1)",
+      }]
+    },
+    options: {
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const label = context.label || '';
+              const value = context.raw || 0;
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = Math.round((Number(value) / total) * 100);
+              return `${label}: ${value} (${percentage}%)`;
+            }
+          }
+        }
+      },
+      cutout: '70%'
+    }
+  });
+}
   loadAllData(): void {
     this.isLoadingStats = true;
     this.isLoadingAssignments = true;
@@ -226,4 +310,7 @@ export class StatisticsComponent implements OnInit {
   getMaxAssignment(): number {
     return Math.max(...this.assignmentStats.map(s => s.count), 1);
   }
+  getMaxProjectTickets(): number {
+  return Math.max(...this.projectsTicketStats.map(p => p.ticketCount), 1);
+}
 }
