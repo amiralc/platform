@@ -278,93 +278,157 @@ export class StatisticsComponent implements OnInit {
     });
   }
 
-  createAvgResolutionChart(): void {
-    const ctx = document.getElementById('avgResolutionChart') as HTMLCanvasElement;
+ createAvgResolutionChart(): void {
+  const ctx = document.getElementById('avgResolutionChart') as HTMLCanvasElement;
 
-    if (this.avgResolutionTime && ctx) {
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: Object.keys(this.avgResolutionTime),
-          datasets: [{
-            label: 'Average Resolution Time',
-            data: Object.values(this.avgResolutionTime),
-            backgroundColor: 'rgba(78, 115, 223, 0.05)',
-            borderColor: '#4e73df',
-            borderWidth: 2,
-            tension: 0.4,
-            fill: true,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: { precision: 0 },
-            },
-          },
-          plugins: {
-            legend: { position: 'top' },
-            tooltip: {
-              callbacks: {
-                label: (context) => `Avg Resolution Time: ${context.raw} days`,
-              },
-            },
-          },
-        },
-      });
-    }
+  // Vérifier si les données sont dans le format attendu
+  if (!this.avgResolutionTime || !ctx) return;
+
+  // Extraire les données selon le format de l'API
+  let data: { projectName: string, avgHours: number }[] = [];
+  
+  if (Array.isArray(this.avgResolutionTime.data)) {
+    // Format depuis l'API (comme dans ololo.PNG)
+    data = this.avgResolutionTime.data;
+  } else if (Array.isArray(this.avgResolutionTime)) {
+    // Format alternatif
+    data = this.avgResolutionTime;
+  } else {
+    console.error('Format de données non reconnu pour avgResolutionTime', this.avgResolutionTime);
+    return;
   }
 
+  // Créer le graphique
+  new Chart(ctx, {
+    type: 'bar', // Changé de 'line' à 'bar' pour meilleure lisibilité
+    data: {
+      labels: data.map(item => item.projectName),
+      datasets: [{
+        label: 'Temps Moyen de Résolution (heures)',
+        data: data.map(item => item.avgHours),
+        backgroundColor: data.map(item => this.getChartColor(item.projectName)),
+        borderColor: '#4e73df',
+        borderWidth: 1,
+        borderRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Heures'
+          },
+          ticks: {
+            precision: 1
+          }
+        },
+        x: {
+          grid: {
+            display: false
+          }
+        }
+      },
+      plugins: {
+        legend: { 
+          display: false 
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              return `${context.parsed.y} heures`;
+            }
+          }
+        }
+      }
+    }
+  });
+}
   createComplexityChart(): void {
-    const ctx = document.getElementById('complexityChart') as HTMLCanvasElement;
+  const ctx = document.getElementById('complexityChart') as HTMLCanvasElement;
 
-    if (this.complexityVsEstimate && ctx) {
-      const complexities = this.complexityVsEstimate.map(item => item.complexity);
-      const estimated = this.complexityVsEstimate.map(item => item.estimated);
-      
-      new Chart(ctx, {
-        type: 'scatter',
-        data: {
-          datasets: [{
-            label: 'Complexity vs Estimated',
-            data: complexities.map((c, i) => ({ x: c, y: estimated[i] })),
-            backgroundColor: 'rgba(78, 115, 223, 1)',
-            borderColor: '#4e73df',
-            borderWidth: 1,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: {
-              title: { display: true, text: 'Complexity' },
-              beginAtZero: true,
-            },
-            y: {
-              title: { display: true, text: 'Estimated Time' },
-              beginAtZero: true,
-            },
-          },
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: (context) => {
-                  const point = context.raw as { x: number, y: number };
-                  return `Complexity: ${point.x}, Estimated: ${point.y} hours`;
-                },
-              },
-            },
-          },
-        },
-      });
-    }
+  if (!this.complexityVsEstimate || !ctx || this.complexityVsEstimate.length === 0) {
+    console.warn('Données de complexité manquantes ou format incorrect');
+    return;
   }
 
+  // Vérifier si les données contiennent 'ratio' ou 'estimated'
+  const hasRatio = this.complexityVsEstimate.some(item => 'ratio' in item);
+  const yAxisKey = hasRatio ? 'ratio' : 'estimated';
+
+  // Préparer les données
+  const dataPoints = this.complexityVsEstimate.map(item => ({
+    x: item.complexity,
+    y: item[yAxisKey],
+    title: item.title || `Ticket ${item.complexity}`
+  }));
+
+  // Créer le graphique
+  new Chart(ctx, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Ratio Complexité/Temps',
+        data: dataPoints,
+        backgroundColor: 'rgba(78, 115, 223, 0.8)',
+        borderColor: '#4e73df',
+        borderWidth: 1,
+        pointRadius: 8,
+        pointHoverRadius: 10
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          title: { 
+            display: true, 
+            text: 'Complexité',
+            font: {
+              weight: 'bold'
+            }
+          },
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1,
+            precision: 0
+          }
+        },
+        y: {
+          title: { 
+            display: true, 
+            text: 'Ratio Temps Réel/Estimé',
+            font: {
+              weight: 'bold'
+            }
+          },
+          beginAtZero: true
+        }
+      },
+      plugins: {
+        legend: { 
+          display: false 
+        },
+        tooltip: {
+          callbacks: {
+            label: (context) => {
+              const point = dataPoints[context.dataIndex];
+              return [
+                `Ticket: ${point.title}`,
+                `Complexité: ${point.x}`,
+                `Ratio: ${point.y.toFixed(2)}`
+              ];
+            }
+          }
+        }
+      }
+    }
+  });
+}
   createUsersPerTeamChart(): void {
     const ctx = document.getElementById('usersPerTeamChart') as HTMLCanvasElement;
 
