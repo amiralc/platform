@@ -1,83 +1,71 @@
+/* Styles généraux */
 .card {
-  border-radius: 10px;
-  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card-header {
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 600;
 }
 
-canvas {
-  max-height: 400px;
+/* Graphiques */
+.chart-container {
+  position: relative;
+  min-height: 200px;
 }
 
+/* Barre de progression fine */
+.progress-thin {
+  height: 4px;
+}
+
+/* Badges */
+.badge {
+  font-weight: 500;
+}
+
+/* En-têtes de cartes */
+.card-header {
+  padding: 1rem 1.5rem;
+}
+
+/* Liste des tickets */
 .list-group-item {
-  border-left: none;
-  border-right: none;
+  border-left: 0;
+  border-right: 0;
+  transition: background-color 0.2s ease;
 }
 
-.progress {
-  height: 8px;
+.list-group-item:first-child {
+  border-top: 0;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+/* Graphique en courbes */
+.line-chart-tooltip {
+  background-color: white;
+  padding: 5px 10px;
   border-radius: 4px;
-}
-.bg-purple {
-  background-color: #6f42c1;
-}
-
-.text-purple {
-  color: #6f42c1;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  border: 1px solid #eee;
 }
 
-.list-group-item {
-  padding: 0.75rem 1.25rem;
-}
-.bg-indigo {
-  background-color: #6610f2;
-}
-
-.text-indigo {
-  color: #6610f2;
-}
-
-.bg-gradient-indigo {
-  background-image: linear-gradient(to right, #6610f2, #9b59b6);
-}
-
-.chart-container {
-  position: relative;
-  min-height: 250px;
-}
-
-.progress {
-  overflow: visible;
-  background-color: #f0f2f5;
-}
-
-.progress-bar {
-  position: relative;
-  overflow: visible;
-  transition: width 0.6s ease;
-}
-
-.progress-bar:after {
-  content: '';
-  position: absolute;
-  right: -5px;
-  top: -2px;
-  height: 14px;
-  width: 14px;
-  background: inherit;
-  border-radius: 50%;
-}
-.bg-indigo {
-  background-color: #6610f2;
-}
-
-.text-indigo {
-  color: #6610f2;
-}
-
-.chart-container {
-  position: relative;
-  min-height: 250px;
+/* Responsive */
+@media (max-width: 768px) {
+  .chart-container {
+    min-height: 250px;
+  }
 }

@@ -1,181 +1,123 @@
-<div class="container mt-4">
-  <!-- Première ligne : Stats principales -->
-  <div class="row">
-    <div class="col-md-8">
-      <div class="card shadow mb-4">
-        <div class="card-header bg-primary text-white">
-          <h5 class="mb-0">Ticket Status Distribution</h5>
+<div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
+  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Tableau de Bord</h2>
+
+  <!-- First Row: Ticket Status + Resolved Tickets -->
+  <div class="row g-4">
+    <!-- Ticket Status Chart -->
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm rounded-4 border-0" style="min-height: 280px;">
+        <div class="card-header bg-gradient bg-primary text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Répartition des Statuts de Tickets</h6>
         </div>
-        <div class="card-body">
-          <canvas id="statusChart"></canvas>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="statusChart" height="160"></canvas>
         </div>
       </div>
     </div>
 
-    <div class="col-md-4">
-      <div class="card shadow mb-4">
-        <div class="card-header bg-success text-white">
-          <h5 class="mb-0">Recently Resolved/Closed Tickets</h5>
+    <!-- Recent Tickets -->
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-success text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Tickets Résolus Récemment</h6>
         </div>
-        <div class="card-body">
-          <ul class="list-group">
-            <li *ngFor="let ticket of recentResolvedTickets" class="list-group-item">
+        <div class="card-body overflow-auto px-3 py-2" style="max-height: 260px;">
+          <ul class="list-group list-group-flush">
+            <li *ngFor="let ticket of recentResolvedTickets" class="list-group-item small">
               <strong>{{ ticket.title }}</strong>
-              <br>
-              <small class="text-muted">
-                Status: <span class="badge bg-success">{{ ticket.status }}</span>
-                <br>
-                Project: {{ getProjectName(ticket.project?.project_id) }}
-              </small>
+              <div class="text-muted mt-1">
+                <span class="badge bg-success me-1">{{ ticket.status }}</span><br />
+                Projet : {{ getProjectName(ticket.project?.project_id) }}
+              </div>
             </li>
-            <li *ngIf="recentResolvedTickets.length === 0" class="list-group-item">
-              No recently resolved tickets
+            <li *ngIf="recentResolvedTickets.length === 0" class="list-group-item text-muted text-center">
+              Aucun ticket résolu récemment
             </li>
           </ul>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Nouvelle carte améliorée pour les tickets par projet -->
-      <div class="card shadow mb-4">
-        <div class="card-header bg-indigo text-white">
-          <h5 class="mb-0">Tickets par Projet</h5>
+  <!-- Second Row: Project Chart + Assignation -->
+  <div class="row mt-4 g-4">
+    <!-- Project Chart -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-info text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Tickets par Projet</h6>
         </div>
-        <div class="card-body">
-          <div *ngIf="isLoadingProjects" class="text-center py-4">
-            <div class="spinner-border text-indigo" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-          
-          <div *ngIf="!isLoadingProjects">
-            <div class="chart-container" style="height: 250px;">
-              <canvas id="projectsChart"></canvas>
-            </div>
-            
-            <div class="mt-3">
-              <ul class="list-group list-group-flush">
-                <li *ngFor="let stat of projectsTicketStats" 
-                    class="list-group-item d-flex justify-content-between align-items-center py-2 px-0 border-0">
-                  <div class="d-flex align-items-center">
-                    <span class="badge me-2" 
-                          [style.backgroundColor]="getChartColor(stat.projectName)">
-                      {{ stat.ticketCount }}
-                    </span>
-                    <span class="text-truncate" style="max-width: 120px;">
-                      {{ stat.projectName || 'Projet sans nom' }}
-                    </span>
-                  </div>
-                  <small class="text-muted">
-                    {{ (stat.ticketCount / getTotalProjectTickets()) * 100 | number:'1.0-0' }}%
-                  </small>
-                </li>
-              </ul>
-            </div>
-          </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="projectsChart" style="max-height: 160px;"></canvas>
         </div>
       </div>
+    </div>
 
-      <div class="card shadow">
-        <div class="card-header bg-info text-white">
-          <h5 class="mb-0">Quick Stats</h5>
+    <!-- Assignation Chart -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-warning text-dark rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Assignation des Tickets par Utilisateur</h6>
         </div>
-        <div class="card-body">
-          <div *ngFor="let stat of statusStats" class="mb-2">
-            <div class="d-flex justify-content-between">
-              <span>{{ stat.status }}:</span>
-              <strong>{{ stat.count }}</strong>
-            </div>
-            <div class="progress mt-1">
-              <div class="progress-bar" 
-                   [ngClass]="{
-                     'bg-secondary': stat.status === 'OPEN',
-                     'bg-primary': stat.status === 'IN_PROGRESS',
-                     'bg-success': stat.status === 'RESOLVED',
-                     'bg-danger': stat.status === 'CLOSED'
-                   }"
-                   [style.width.%]="(stat.count / getTotalTickets()) * 100">
-              </div>
-            </div>
-          </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="assignmentChart" style="max-height: 160px;"></canvas>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Deuxième ligne : Assignations par utilisateur -->
-  <div class="row mt-4">
-    <div class="col-12">
-      <div class="card shadow">
-        <div class="card-header bg-warning text-dark p-1"> 
-          <h5 class="mb-0">Tickets Assignments by User</h5>
-        </div>
-        <div class="card-body p-0">
-          <!-- Loader -->
-          <div *ngIf="isLoadingAssignments" class="text-center py-4">
-            <div class="spinner-border text-warning" role="status">
-              <span class="visually-hidden">Loading...</span>
-            </div>
-          </div>
-
-          <!-- Graphique et tableau -->
-          <div *ngIf="!isLoadingAssignments">
-            <div class="chart-container" style="height: 120px; margin-bottom: -4px;">
-              <canvas id="assignmentChart"></canvas>
-            </div>
-
-            <div class="table-responsive mt-0">
-              <table class="table table-hover table-striped mb-0">
-                <thead class="table-light">
-                  <tr>
-                    <th>User</th>
-                    <th width="120">Assigned Tickets</th>
-                    <th width="250">Workload Distribution</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr *ngFor="let stat of assignmentStats">
-                    <td>
-                      <div class="d-flex align-items-center">
-                        <div class="me-2">
-                          <i class="bi bi-person-circle fs-4"></i>
-                        </div>
-                        <div>
-                          <div>{{ getUserName(stat) }}</div>
-                          <div class="text-muted small">
-                            {{ stat.user?.email || 'No email available' }}
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    <td class="text-center">
-                      <span class="badge bg-warning text-dark fs-6">
-                        {{ stat.count }}
-                      </span>
-                    </td>
-                    <td>
-                      <div class="progress" style="height: 24px;">
-                        <div class="progress-bar bg-warning" 
-                             role="progressbar"
-                             [style.width.%]="(stat.count / getMaxAssignment()) * 100"
-                             [attr.aria-valuenow]="stat.count"
-                             aria-valuemin="0"
-                             [attr.aria-valuemax]="getMaxAssignment()">
-                          {{ (stat.count / getMaxAssignment()) * 100 | number:'1.0-0' }}%
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr *ngIf="assignmentStats.length === 0">
-                    <td colspan="3" class="text-center text-muted">
-                      No assigned tickets found
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+  <!-- Third Row: Time Tracked + Avg Resolution Time -->
+<div class="row mt-4 g-4">
+  <!-- Time Tracked Per User -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
+        <h6 class="mb-0">Temps Suivi par Utilisateur</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="timeTrackedChart"></canvas>
       </div>
     </div>
   </div>
+
+  <!-- Average Resolution Time -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
+        <h6 class="mb-0">Temps Moyen de Résolution</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="avgResolutionChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Fourth Row: Complexity vs Estimated + Users Per Team -->
+<div class="row mt-4 g-4">
+  <!-- Complexity vs Estimated -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-purple text-white rounded-top-4 py-2 px-3" style="background-color: #6f42c1;">
+        <h6 class="mb-0">Complexité vs Temps Estimé</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="complexityChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users per Team -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-teal text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
+        <h6 class="mb-0">Utilisateurs par Équipe</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="usersPerTeamChart"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
