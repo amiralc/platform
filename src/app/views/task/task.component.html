@@ -28,6 +28,9 @@
                 <th>Description</th>
                 <th>Project</th>
                 <th>Status</th>
+                <th>Complexity</th>
+                <th>Estimated Time</th>
+                <th>Assigned To</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -47,19 +50,32 @@
                     {{ ticket.status }}
                   </span>
                 </td>
+                <td>{{ ticket.complexity }}/10</td>
+                <td>{{ ticket.estimatedTime }}h</td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(ticket)" title="Edit">
-                    <i class="fas fa-edit"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)" title="Delete">
-                    <i class="fas fa-trash-alt"></i>
-                  </button>
+<td>
+  <ng-container *ngIf="ticket.assignTo; else unassigned">
+    {{ ticket.assignTo.firstname }} {{ ticket.assignTo.lastname }}
+  </ng-container>
+  <ng-template #unassigned>
+    <span class="text-muted">Non assigné</span>
+  </ng-template>
+</td>
+                <td>
+                  <div class="d-flex">
+                    <button class="btn btn-sm btn-warning me-1" (click)="openEditModal(ticket)" title="Edit">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteTicket(ticket.ticket_jira_id!)" title="Delete">
+                      <i class="fas fa-trash-alt"></i>
+                    </button>
+                  </div>
                 </td>
               </tr>
             </tbody>
           </table>
 
-           <!-- Pagination -->
+          <!-- Pagination (inchangé) -->
           <div class="d-flex justify-content-between align-items-center p-3 border-top">
             <div class="text-muted small">
               Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
@@ -101,7 +117,7 @@
     </div>
   </div>
 
-  <!-- Create Modal -->
+  <!-- Create Modal (inchangé) -->
   <div class="modal fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -148,9 +164,32 @@
                 <option value="RESOLVED">RESOLVED</option>
                 <option value="CLOSED">CLOSED</option>
               </select>
-              <div *ngIf="createForm.get('status')?.invalid && createForm.get('status')?.touched" class="text-danger">
-                <i class="fas fa-exclamation-circle me-1"></i>Status is required
+            </div>
+
+            <div class="mb-3">
+              <label><i class="fas fa-brain me-1"></i>Complexity (1-10)</label>
+              <input type="number" class="form-control" formControlName="complexity" min="1" max="10">
+              <div *ngIf="createForm.get('complexity')?.invalid && createForm.get('complexity')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Must be between 1 and 10
               </div>
+            </div>
+
+            <div class="mb-3">
+              <label><i class="fas fa-clock me-1"></i>Estimated Time (hours)</label>
+              <input type="number" class="form-control" formControlName="estimatedTime" min="0">
+              <div *ngIf="createForm.get('estimatedTime')?.invalid && createForm.get('estimatedTime')?.touched" class="text-danger">
+                <i class="fas fa-exclamation-circle me-1"></i>Must be positive
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label><i class="fas fa-user me-1"></i>Assign To</label>
+              <select class="form-control" formControlName="assignToId">
+                <option [value]="null">-- Not assigned --</option>
+                <option *ngFor="let user of users" [value]="user.user_id">
+                  {{ user.firstname }} {{ user.lastname }}
+                </option>
+              </select>
             </div>
           </form>
         </div>
@@ -167,7 +206,7 @@
   </div>
   <div class="modal-backdrop fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'"></div>
 
-  <!-- Edit Modal -->
+  <!-- Edit Modal (inchangé) -->
   <div class="modal fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'">
     <div class="modal-dialog">
       <div class="modal-content">

@@ -10,7 +10,8 @@
       "@docs-components/*": [
         "./src/components/*"
       ]
-    }
+    },
+     "incremental": false
   },
   "files": [
     "src/main.ts"

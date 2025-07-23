@@ -10,16 +10,25 @@ export interface Project {
 
 export interface TicketJira {
   ticket_jira_id?: number;
-  ticketNumber?: string | null;
+  ticketNumber?: string;
   title: string;
   description: string;
-  status?: string | null;
-  complexity?: string | null;
-  estimatedTime?: number | null;
-  timePasses?: number | null;
-  project?: { project_id: number } | null;
-  user?: any | null;
-  timeTrackeds?: any[] | null;
+  status?: string;
+  complexity?: number;  // Changé de string à number
+  estimatedTime?: number;
+  timePasses?: number;
+  projectId?: number;   // Ajouté pour correspondre au backend
+  assignTo?: {  // <-- Ajoutez cette propriété
+    user_id: number;
+    firstname: string;
+    lastname: string;
+    email: string;
+    // ... autres champs utilisateur
+  };
+   assignToId?: number;   // Ajouté pour l'assignation
+  project?: { project_id: number };
+  user?: any;
+  timeTrackeds?: any[];
 }
 interface UserAssignment {
   id?: number;
@@ -51,10 +60,28 @@ export class TicketJiraService {
     return this.http.get<Project[]>(this.projectUrl);
   }
 
-createTicket(ticket: TicketJira): Observable<TicketJira> {
-  
-  console.log('Envoi au backend:', ticket);
-  return this.http.post<TicketJira>(this.baseUrl, ticket);
+createTicket(ticketData: {
+  title: string;
+  description: string;
+  projectId: number;
+  status?: string;
+  complexity?: number;
+  estimatedTime?: number;
+  assignToId?: number;
+}): Observable<TicketJira> {
+  const payload = {
+    title: ticketData.title,
+    description: ticketData.description,
+    status: ticketData.status || 'OPEN',
+    complexity: ticketData.complexity || 3,
+    estimatedTime: ticketData.estimatedTime || 0,
+    projectId: ticketData.projectId,
+    assignToId: ticketData.assignToId,
+    timePasses: 0
+  };
+
+  console.log('Envoi au backend:', payload);
+  return this.http.post<TicketJira>(this.baseUrl, payload);
 }
 
   updateTicket(id: number, ticket: TicketJira): Observable<TicketJira> {
@@ -92,4 +119,5 @@ getProjectsWithTicketCount(): Observable<{projectName: string, ticketCount: numb
     `${this.URL}/stats/projects-ticket-count`
   );
 }
+
 }

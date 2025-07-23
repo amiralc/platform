@@ -1,41 +1,64 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';  // <-- importer CommonModule
+import { Component, OnInit } from '@angular/core';
+import { StatisticsService } from '../../services/statistics.service';
+import { CommonModule } from '@angular/common';
+import { ProjectService } from '../../services/project.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
   standalone: true,
-  imports: [CommonModule],  // <-- ajouter CommonModule ici
+  imports: [CommonModule, RouterModule],
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent {
-  totalTasks = 150;
-  totalProjects = 12;
-  activeMembers = 7;
+export class DashboardComponent implements OnInit {
+  kpis = {
+    totalEmployees: 0,
+    totalProjects: 0
+  };
+  projects: any[] = [];
+  isLoading = false;
 
-  completedTaskPercentage = 68;
+  constructor(
+    private statsService: StatisticsService,
+    private projectService: ProjectService
+  ) {}
 
-  ongoingProjects = [
-    { name: 'Intranet RH', progress: 45 },
-    { name: 'Portail Client', progress: 72 },
-    { name: 'Analyse des ventes', progress: 90 },
-    { name: 'Application Mobile', progress: 30 },
-    { name: 'Migration Cloud', progress: 55 },
-  ];
+  ngOnInit(): void {
+    this.loadKPIs();
+    this.loadProjects();
+  }
 
-  todayTasks = [
-    'Réunion sprint à 10h',
-    'Valider les tickets JIRA',
-    'Analyser le backlog du projet X',
-    'Envoyer rapport hebdomadaire',
-    'Planifier la démo client',
-  ];
+  loadKPIs(): void {
+    this.isLoading = true;
+    this.statsService.getBasicKPIs().subscribe({
+      next: (data) => {
+        this.kpis = data;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading KPIs', err);
+        this.isLoading = false;
+      }
+    });
+  }
 
-  recentActivities = [
-    'Alice a terminé la tâche "Déploiement"',
-    'Nouveau projet "CRM Client" créé',
-    'Bob a mis à jour la tâche "Design UI"',
-    'Mise à jour de la roadmap projet',
-    'Réunion équipe marketing réalisée',
-  ];
+  loadProjects(): void {
+    this.isLoading = true;
+    this.projectService.getProjects().subscribe({
+      next: (projects) => {
+        this.projects = projects;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading projects', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  getTicketCount(project: any): number {
+    return project.tickets?.length || 0;
+  }
+ 
 }

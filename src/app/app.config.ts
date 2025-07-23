@@ -17,6 +17,7 @@ import { provideHttpClient ,withInterceptors} from '@angular/common/http';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(

@@ -44,19 +44,19 @@
               <tr *ngFor="let project of paginatedProjects; trackBy: trackByProjectId">
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
-              <td>
-  <ng-container *ngIf="project.tickets?.length; else noTickets">
-    <div *ngFor="let ticket of project.tickets" 
-         class="badge bg-secondary me-1 mb-1"
-         (click)="openTicketModal(ticket)"
-         style="cursor: pointer;">
-      {{ ticket.title || '#'+ticket.ticket_jira_id }}
-    </div>
-  </ng-container>
-  <ng-template #noTickets>
-    <span class="text-muted">No tickets</span>
-  </ng-template>
-</td>
+                <td>
+                  <ng-container *ngIf="project.tickets?.length; else noTickets">
+                    <div *ngFor="let ticket of project.tickets" 
+                         class="badge bg-secondary me-1 mb-1"
+                         (click)="openTicketModal(ticket)"
+                         style="cursor: pointer;">
+                      {{ ticket.title || '#'+ticket.ticket_jira_id }}
+                    </div>
+                  </ng-container>
+                  <ng-template #noTickets>
+                    <span class="text-muted">No tickets</span>
+                  </ng-template>
+                </td>
                 <td>
                   <button
                     class="btn btn-sm btn-info"
@@ -67,8 +67,8 @@
                     <i class="fas fa-eye"></i>
                   </button>
                 </td>
-                <td>
-                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(project)" title="Edit">
+                <td style="display: flex; gap: 8px; white-space: nowrap;">
+                  <button class="btn btn-sm btn-warning" (click)="openEditModal(project)" title="Edit">
                     <i class="fas fa-edit"></i>
                   </button>
                   <button
@@ -121,6 +121,8 @@
     </div>
   </div>
 </div>
+
+<!-- Les modales restent inchangées -->
 <!-- Nouvelle Modal pour les Détails du Ticket -->
 <div class="modal-overlay" *ngIf="isTicketModalOpen" (click)="closeTicketModal()"></div>
 <div class="modal-content-wrapper ticket-modal" *ngIf="isTicketModalOpen">
@@ -427,5 +429,4 @@
       </div>
     </form>
   </div>
-  
 </div>

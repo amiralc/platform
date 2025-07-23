@@ -36,5 +36,11 @@ private baseUrl = 'http://localhost:8083/api/stats';
   getComplexityVsEstimated(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/complexity-estimate`);
   }
+ getBasicKPIs(): Observable<{ totalEmployees: number, totalProjects: number }> {
+    return this.http.get<{ totalEmployees: number, totalProjects: number }>(`${this.baseUrl}/kpis`);
+  }
+   getDetailedUserAssignments(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/detailed-assignments`);
+  }
 
 }
