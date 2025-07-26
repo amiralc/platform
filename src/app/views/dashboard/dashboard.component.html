@@ -1,5 +1,5 @@
 <div class="dashboard-container">
-  <!-- Section KPI -->
+  <!-- Section KPI (inchangée) -->
   <div class="kpi-container">
     <!-- KPI Employees -->
     <div class="kpi-card employee-card">
@@ -40,11 +40,11 @@
     </div>
   </div>
 
-  <!-- Section Projets -->
+  <!-- Section Projets (inchangée) -->
   <div class="projects-section">
     <h2>Liste des Projets</h2>
     <div class="projects-grid">
-      <div *ngFor="let project of projects" class="project-card" [routerLink]="['/projects', project.project_id]">
+      <div *ngFor="let project of projects" class="project-card" (click)="loadProjectTickets(project)">
         <div class="project-header">
           <h3>{{ project.name }}</h3>
           <span class="ticket-count">{{ getTicketCount(project) }} tickets</span>
@@ -65,8 +65,55 @@
     </div>
   </div>
 
+  <!-- Nouvelle Pop-up Compacte -->
+  <div *ngIf="selectedProject" class="modal-overlay" (click)="backToProjects()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <div class="project-title">
+          <h3>{{ selectedProject.name }}</h3>
+          <span class="ticket-count">{{ projectTickets.length }} ticket(s)</span>
+        </div>
+        <button class="close-button" (click)="backToProjects()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-content">
+        <div *ngIf="projectTickets.length > 0" class="tickets-list">
+          <div *ngFor="let ticket of projectTickets" class="ticket-item">
+            <div class="ticket-header">
+              <div class="ticket-title">
+                <span class="ticket-number">#{{ ticket.ticketNumber }}</span>
+                <h4>{{ ticket.title }}</h4>
+              </div>
+              <span class="ticket-status" [ngClass]="'status-' + ticket.status.toLowerCase()">
+                {{ ticket.status }}
+              </span>
+            </div>
+            
+            <div class="ticket-body">
+              <p class="ticket-description" *ngIf="ticket.description">
+                {{ ticket.description }}
+              </p>
+              <div class="ticket-footer" *ngIf="ticket.assignTo">
+                <i class="fas fa-user"></i>
+                <span>{{ ticket.assignTo.firstname }} {{ ticket.assignTo.lastname }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div *ngIf="projectTickets.length === 0" class="no-tickets">
+          <i class="fas fa-inbox"></i>
+          <p>Aucun ticket trouvé</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="loading-container" *ngIf="isLoading">
     <div class="custom-spinner"></div>
     <p>Chargement en cours...</p>
   </div>
 </div>
+ 

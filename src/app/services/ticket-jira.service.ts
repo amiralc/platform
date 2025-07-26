@@ -119,5 +119,9 @@ getProjectsWithTicketCount(): Observable<{projectName: string, ticketCount: numb
     `${this.URL}/stats/projects-ticket-count`
   );
 }
+  getTicketsByProject(projectId: number): Observable<TicketJira[]> {
+    return this.http.get<TicketJira[]>(`${this.baseUrl}/by-project/${projectId}`);
+  }
+
 
 }

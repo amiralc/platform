@@ -1,3 +1,4 @@
+/* Styles KPI (inchangés) */
 .kpi-container {
   display: flex;
   gap: 20px;
@@ -81,14 +82,11 @@
   }
 }
 
-.kpi-loading {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #718096;
+/* Styles de base (inchangés) */
+.dashboard-container {
   padding: 20px;
-  justify-content: center;
 }
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -101,8 +99,8 @@
 .custom-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(78, 115, 223, 0.2); /* Couleur bleue claire */
-  border-top: 4px solid #4e73df; /* Couleur bleue principale */
+  border: 4px solid rgba(78, 115, 223, 0.2);
+  border-top: 4px solid #4e73df;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 10px;
@@ -113,16 +111,7 @@
   100% { transform: rotate(360deg); }
 }
 
-/* Style optionnel pour le texte */
-.loading-container p {
-  color: #4e73df;
-  font-size: 0.9rem;
-  margin-top: 8px;
-}
-.dashboard-container {
-  padding: 20px;
-}
-
+/* Section Projets (inchangée) */
 .projects-section {
   margin-top: 30px;
 
@@ -204,4 +193,203 @@
   }
 }
 
-/* Styles existants pour les KPI... */
+/* Nouveau style pour la pop-up compacte */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-container {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.15);
+  width: 90%;
+  max-width: 500px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.25s ease;
+}
+
+.modal-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  
+  h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2d3748;
+    font-weight: 600;
+  }
+  
+  .ticket-count {
+    background: #e2e8f0;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    color: #4a5568;
+    margin-left: 10px;
+  }
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  color: #718096;
+  cursor: pointer;
+  transition: color 0.2s;
+  
+  &:hover {
+    color: #2d3748;
+  }
+}
+
+.modal-content {
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ticket-item {
+  border: 1px solid #edf2f7;
+  border-radius: 6px;
+  padding: 12px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #f8fafc;
+  }
+}
+
+.ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  
+  h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #1a202c;
+    font-weight: 500;
+  }
+  
+  .ticket-number {
+    font-size: 0.75rem;
+    color: #718096;
+    background: #f1f5f9;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+}
+
+.ticket-status {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  
+  &.status-open {
+    background: #ebf8ff;
+    color: #2b6cb0;
+  }
+  &.status-in-progress {
+    background: #feebc8;
+    color: #b7791f;
+  }
+  &.status-resolved {
+    background: #f0fff4;
+    color: #276749;
+  }
+  &.status-closed {
+    background: #f7fafc;
+    color: #4a5568;
+  }
+}
+
+.ticket-body {
+  .ticket-description {
+    margin: 8px 0;
+    font-size: 0.85rem;
+    color: #4a5568;
+    line-height: 1.4;
+  }
+  
+  .ticket-assignee {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #718096;
+    
+    i {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+.no-tickets {
+  text-align: center;
+  padding: 20px;
+  color: #a0aec0;
+  
+  i {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+    color: #e2e8f0;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .modal-container {
+    max-width: 95%;
+    max-height: 65vh;
+  }
+  
+  .ticket-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    
+    .ticket-status {
+      align-self: flex-start;
+    }
+  }
+}

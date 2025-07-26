@@ -3,6 +3,7 @@ import { StatisticsService } from '../../services/statistics.service';
 import { CommonModule } from '@angular/common';
 import { ProjectService } from '../../services/project.service';
 import { RouterModule } from '@angular/router';
+import { TicketJiraService } from '../../services/ticket-jira.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,10 +19,13 @@ export class DashboardComponent implements OnInit {
   };
   projects: any[] = [];
   isLoading = false;
+  selectedProject: any = null;
+  projectTickets: any[] = [];
 
   constructor(
     private statsService: StatisticsService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private ticketService: TicketJiraService
   ) {}
 
   ngOnInit(): void {
@@ -57,8 +61,28 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  loadProjectTickets(project: any): void {
+    this.selectedProject = project;
+    this.isLoading = true;
+    
+    this.ticketService.getTicketsByProject(project.project_id).subscribe({
+      next: (tickets) => {
+        this.projectTickets = tickets;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading tickets', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  backToProjects(): void {
+    this.selectedProject = null;
+    this.projectTickets = [];
+  }
+
   getTicketCount(project: any): number {
     return project.tickets?.length || 0;
   }
- 
 }
