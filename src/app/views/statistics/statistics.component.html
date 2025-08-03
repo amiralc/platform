@@ -1,5 +1,5 @@
 <div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
-  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Tableau de Bord</h2>
+  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
 
   <!-- First Row: Ticket Status + Resolved Tickets -->
   <div class="row g-4">
@@ -7,7 +7,7 @@
     <div class="col-12 col-lg-8">
       <div class="card shadow-sm rounded-4 border-0" style="min-height: 280px;">
         <div class="card-header bg-gradient bg-primary text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Répartition des Statuts de Tickets</h6>
+          <h6 class="mb-0">Ticket Status Distribution</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="statusChart" height="160"></canvas>
@@ -15,11 +15,11 @@
       </div>
     </div>
 
-    <!-- Recent Tickets -->
+    <!-- Recent Resolved Tickets -->
     <div class="col-12 col-lg-4">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-success text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Tickets Résolus Récemment</h6>
+          <h6 class="mb-0">Recently Resolved Tickets</h6>
         </div>
         <div class="card-body overflow-auto px-3 py-2" style="max-height: 260px;">
           <ul class="list-group list-group-flush">
@@ -27,11 +27,11 @@
               <strong>{{ ticket.title }}</strong>
               <div class="text-muted mt-1">
                 <span class="badge bg-success me-1">{{ ticket.status }}</span><br />
-                Projet : {{ getProjectName(ticket.project?.project_id) }}
+                Project: {{ getProjectName(ticket.project?.project_id) }}
               </div>
             </li>
             <li *ngIf="recentResolvedTickets.length === 0" class="list-group-item text-muted text-center">
-              Aucun ticket résolu récemment
+              No recently resolved tickets
             </li>
           </ul>
         </div>
@@ -39,13 +39,13 @@
     </div>
   </div>
 
-  <!-- Second Row: Project Chart + Assignation -->
+  <!-- Second Row: Project Chart + Assignment -->
   <div class="row mt-4 g-4">
     <!-- Project Chart -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-info text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Tickets par Projet</h6>
+          <h6 class="mb-0">Tickets per Project</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="projectsChart" style="max-height: 160px;"></canvas>
@@ -53,11 +53,11 @@
       </div>
     </div>
 
-    <!-- Assignation Chart -->
+    <!-- Assignment Chart -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-warning text-dark rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Assignation des Tickets par Utilisateur</h6>
+          <h6 class="mb-0">Ticket Assignment by User</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="assignmentChart" style="max-height: 160px;"></canvas>
@@ -67,57 +67,56 @@
   </div>
 
   <!-- Third Row: Time Tracked + Avg Resolution Time -->
-<div class="row mt-4 g-4">
-  <!-- Time Tracked Per User -->
-  <div class="col-12 col-lg-6">
-    <div class="card shadow-sm rounded-4 border-0 h-100">
-      <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
-        <h6 class="mb-0">Temps Suivi par Utilisateur</h6>
+  <div class="row mt-4 g-4">
+    <!-- Time Tracked Per User -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Time Tracked per User</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="timeTrackedChart"></canvas>
+        </div>
       </div>
-      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
-        <canvas id="timeTrackedChart"></canvas>
+    </div>
+
+    <!-- Average Resolution Time -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Average Resolution Time</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="avgResolutionChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Average Resolution Time -->
-  <div class="col-12 col-lg-6">
-    <div class="card shadow-sm rounded-4 border-0 h-100">
-      <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
-        <h6 class="mb-0">Temps Moyen de Résolution</h6>
+  <!-- Fourth Row: Complexity vs Estimated + Users Per Team -->
+  <div class="row mt-4 g-4">
+    <!-- Complexity vs Estimated -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-purple text-white rounded-top-4 py-2 px-3" style="background-color: #6f42c1;">
+          <h6 class="mb-0">Complexity vs Estimated Time</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="complexityChart"></canvas>
+        </div>
       </div>
-      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
-        <canvas id="avgResolutionChart"></canvas>
+    </div>
+
+    <!-- Users per Team -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-teal text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
+          <h6 class="mb-0">Users per Team</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="usersPerTeamChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-<!-- Fourth Row: Complexity vs Estimated + Users Per Team -->
-<div class="row mt-4 g-4">
-  <!-- Complexity vs Estimated -->
-  <div class="col-12 col-lg-6">
-    <div class="card shadow-sm rounded-4 border-0 h-100">
-      <div class="card-header bg-purple text-white rounded-top-4 py-2 px-3" style="background-color: #6f42c1;">
-        <h6 class="mb-0">Complexité vs Temps Estimé</h6>
-      </div>
-      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
-        <canvas id="complexityChart"></canvas>
-      </div>
-    </div>
-  </div>
-
-  <!-- Users per Team -->
-  <div class="col-12 col-lg-6">
-    <div class="card shadow-sm rounded-4 border-0 h-100">
-      <div class="card-header bg-teal text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
-        <h6 class="mb-0">Utilisateurs par Équipe</h6>
-      </div>
-      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
-        <canvas id="usersPerTeamChart"></canvas>
-      </div>
-    </div>
-  </div>
-</div>
-
 </div>

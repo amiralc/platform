@@ -52,15 +52,15 @@
                 </td>
                 <td>{{ ticket.complexity }}/10</td>
                 <td>{{ ticket.estimatedTime }}h</td>
+                
                 <td>
-<td>
-  <ng-container *ngIf="ticket.assignTo; else unassigned">
-    {{ ticket.assignTo.firstname }} {{ ticket.assignTo.lastname }}
-  </ng-container>
-  <ng-template #unassigned>
-    <span class="text-muted">Non assigné</span>
-  </ng-template>
-</td>
+                  <ng-container *ngIf="ticket.assignTo; else unassigned">
+                    {{ ticket.assignTo.firstname }} {{ ticket.assignTo.lastname }}
+                  </ng-container>
+                  <ng-template #unassigned>
+                    <span class="text-muted">Non assigné</span>
+                  </ng-template>
+                </td>
                 <td>
                   <div class="d-flex">
                     <button class="btn btn-sm btn-warning me-1" (click)="openEditModal(ticket)" title="Edit">

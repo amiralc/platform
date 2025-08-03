@@ -72,7 +72,7 @@
                     <i class="fas fa-edit"></i>
                   </button>
                   <button
-                    class="btn btn-sm btn-danger"
+                    class="btn btn-sm btn-danger "
                     (click)="confirmDelete(project.project_id)"
                     title="Delete"
                   >
@@ -159,7 +159,7 @@
             <img [src]="getUserPhoto(selectedTicket.assignTo)" 
                  class="user-avatar"
                  alt="User photo"
-                 onerror="this.src='assets/images/default-avatar.png'">
+                 >
             <div class="user-details">
               <div class="user-name">{{selectedTicket.assignTo.fullName || 'No name'}}</div>
               <div class="user-email">{{selectedTicket.assignTo.email}}</div>
@@ -202,7 +202,7 @@
           <img [src]="getManagerPhoto()" 
                class="member-avatar" 
                alt="Manager photo"
-               onerror="this.src='assets/images/default-avatar.png';this.onerror=null;">
+               >
           <div class="member-details">
             <div class="member-name">{{selectedProject.workedOn.managedBY.fullName || 'No name'}}</div>
             <div class="member-email">{{selectedProject.workedOn.managedBY.email}}</div>
@@ -225,7 +225,7 @@
             <img [src]="getMemberPhoto(member)" 
                  class="member-avatar" 
                  alt="Member photo"
-                 onerror="this.src='assets/images/default-avatar.png';this.onerror=null;">
+                 >
             <div class="member-info">
               <div class="member-name">{{member.fullName || 'No name'}}</div>
               <div class="member-role">{{ member.roles.length > 0 ? member.roles[0].name : 'Member' }}</div>

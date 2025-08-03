@@ -40,7 +40,7 @@
   flex-grow: 1;
 }
 
-/* Ajuste l’espace entre l’avatar et les infos pour les membres */
+/* Ajuste l'espace entre l'avatar et les infos pour les membres */
 .member-info {
   display: flex;
   flex-direction: column;
@@ -235,18 +235,16 @@ textarea.form-control {
 }
 
 /* ================ */
-/* BOUTONS COMMUNS */
+/* BOUTONS COMMUNS - MODIFIED TO BE SMALLER */
 /* ================ */
 .btn {
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 500;
+ 
   cursor: pointer;
   transition: all 0.2s;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  
+  min-height: 32px; /* Ensures consistent height */
 }
 
 .btn-outline {
@@ -341,8 +339,7 @@ textarea.form-control {
   background: none;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 0.8rem;
+ 
   cursor: pointer;
   color: #007bff;
   display: flex;
@@ -385,8 +382,6 @@ textarea.form-control {
   background: none;
   border: 1px solid #ddd;
   border-radius: 4px;
-  padding: 4px 8px;
-  font-size: 0.75rem;
   cursor: pointer;
   color: #666;
   margin-left: 10px;
@@ -414,8 +409,7 @@ textarea.form-control {
   color: white;
   border: none;
   border-radius: 4px;
-  padding: 8px 16px;
-  font-size: 0.9rem;
+
   cursor: pointer;
   transition: background-color 0.2s;
 }
@@ -446,8 +440,8 @@ textarea.form-control {
 /* ================ */
 .badge {
   display: inline-block;
-  padding: 4px 8px;
-  font-size: 0.75rem;
+  padding: 3px 6px; /* Reduced from 4px 8px */
+  font-size: 0.7rem; /* Reduced from 0.75rem */
   border-radius: 4px;
   background-color: #e9ecef;
   color: #495057;
@@ -527,7 +521,7 @@ textarea.form-control {
   }
   
   .btn {
-    width: 100%;
+    padding:2px 4px;
     justify-content: center;
   }
   .ticket-list {
@@ -644,5 +638,4 @@ textarea.form-control {
   display: block; /* Empêche l'espace réservé de disparaître */
   background-color: #f5f5f5; /* Fond si image non chargée */
 }
-
 }
