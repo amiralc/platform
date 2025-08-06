@@ -1,0 +1,72 @@
+<div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
+  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
+
+  <!-- First Row: Ticket Status + Resolved Tickets -->
+  <div class="row g-4">
+    <!-- Ticket Status Chart -->
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm rounded-4 border-0" style="min-height: 280px;">
+        <div class="card-header bg-gradient bg-primary text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Ticket Status Distribution</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="statusChart" height="160"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Resolved Tickets -->
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-success text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Recently Resolved Tickets</h6>
+        </div>
+        <div class="card-body overflow-auto px-3 py-2" style="max-height: 260px;">
+          <ul class="list-group list-group-flush">
+            <li *ngFor="let ticket of recentResolvedTickets" class="list-group-item small">
+              <strong>{{ ticket.title }}</strong>
+              <div class="text-muted mt-1">
+                <span class="badge bg-success me-1">{{ ticket.status }}</span><br />
+                Project: {{ getProjectName(ticket.project?.project_id) }}
+              </div>
+            </li>
+            <li *ngIf="recentResolvedTickets.length === 0" class="list-group-item text-muted text-center">
+              No recently resolved tickets
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Second Row: Project Chart + Assignment -->
+  <div class="row mt-4 g-4">
+    <!-- Project Chart -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-info text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Tickets per Project</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="projectsChart" style="max-height: 160px;"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Average Resolution Time</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="avgResolutionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    
+  </div>
+
+
+
+
+</div>

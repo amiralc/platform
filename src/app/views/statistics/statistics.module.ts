@@ -7,10 +7,15 @@ import { TableModule } from '@coreui/angular';
 
 // Components
 import { StatisticsComponent } from './statistics.component';
+import { ByuserComponent } from './byuser/byuser.component';
+import { ByprojectComponent } from './byproject/byproject.component';
 
 @NgModule({
   declarations: [
-   StatisticsComponent
+   StatisticsComponent,
+   ByuserComponent,
+   ByprojectComponent
+   
   ],
   imports: [
     CommonModule,
@@ -18,7 +23,9 @@ import { StatisticsComponent } from './statistics.component';
     TableModule
   ],
   exports: [
-    StatisticsComponent 
+    StatisticsComponent ,
+    ByuserComponent,
+    ByprojectComponent,
   ]
 })
 export class StatisticsModule { }

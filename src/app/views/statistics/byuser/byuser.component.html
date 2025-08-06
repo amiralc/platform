@@ -1,0 +1,42 @@
+<div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
+  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
+  <div class="row mt-4 g-4">
+   
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Time Tracked per User</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="timeTrackedChart"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-12 col-lg-6">
+     <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-teal text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
+          <h6 class="mb-0">Users per Team</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+          <canvas id="usersPerTeamChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <div class="row mt-4 g-4">
+   
+    <!-- Assignment Chart -->
+    <div class="col-12 col-lg-6">
+      <div class="card shadow-sm rounded-4 border-0 h-100">
+        <div class="card-header bg-warning text-dark rounded-top-4 py-2 px-3">
+          <h6 class="mb-0">Ticket Assignment by User</h6>
+        </div>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
+          <canvas id="assignmentChart" style="max-height: 160px;"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
