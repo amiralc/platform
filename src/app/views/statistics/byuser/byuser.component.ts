@@ -5,7 +5,9 @@ import { ProjectService } from '../../../services/project.service';
 import { Chart, registerables } from 'chart.js';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StatisticsService } from '../../../services/statistics.service';
+import { StatisticsService,UserPerformanceResponse } from '../../../services/statistics.service';
+import { ChangeDetectorRef } from '@angular/core';
+import { finalize } from 'rxjs/operators';
 
 interface StatusStat {
   status: string;
@@ -41,7 +43,7 @@ interface ApiAssignmentStat {
   imports: [CommonModule, FormsModule]
 })
 export class ByuserComponent implements OnInit {
-  statusStats: StatusStat[] = [];
+ statusStats: StatusStat[] = [];
   recentResolvedTickets: any[] = [];
   projects: any[] = [];
   assignmentStats: AssignmentStat[] = [];
@@ -63,17 +65,26 @@ export class ByuserComponent implements OnInit {
   complexityVsEstimate: any[] = [];
   showRawTimeData = false;
   timeTrackedChart?: Chart;
+  
+  // Partie Performance Utilisateur
+  selectedUserId?: number;
+  userPerformance?: UserPerformanceResponse;
+  performanceError?: string;
+  isLoadingPerformance = false;
+  userPerformanceChart?: Chart;
+  
 
-  constructor(
+ constructor(
     private ticketService: TicketJiraService,
     private projectService: ProjectService,
+    private cdr: ChangeDetectorRef,
     private statsService: StatisticsService
   ) {
     Chart.register(...registerables);
   }
 
   ngOnInit(): void {
-    console.log("testing display in the by user componnent")
+    console.log("Initializing ByUser component");
     this.loadAllData();
     this.loadProjectsTicketStats();
     
@@ -97,6 +108,150 @@ export class ByuserComponent implements OnInit {
       this.createUsersPerTeamChart();
     });
   }
+
+ loadUserPerformance(): void {
+  if (!this.selectedUserId) {
+    this.performanceError = 'Veuillez entrer un ID utilisateur valide';
+    return;
+  }
+
+  console.log('Chargement des performances pour user ID:', this.selectedUserId);
+  this.isLoadingPerformance = true;
+  this.performanceError = undefined;
+  this.userPerformance = undefined;
+
+  this.statsService.getUserPerformanceStats(this.selectedUserId)
+    .pipe(
+      finalize(() => {
+        console.log('Chargement terminé', this.userPerformance);
+        this.isLoadingPerformance = false;
+        this.cdr.detectChanges();
+      })
+    )
+    .subscribe({
+      next: (response) => {
+        console.log('Réponse API:', response);
+        this.userPerformance = response;
+        if (!this.hasPerformanceData()) {
+          this.performanceError = 'Aucune donnée de performance disponible';
+        }
+        this.createUserPerformanceChart();
+      },
+      error: (err) => {
+        console.error('Erreur API:', err);
+        this.performanceError = this.handleError(err);
+      }
+    });
+}
+  // Méthodes utilitaires
+  private isDataEmpty(data: UserPerformanceResponse): boolean {
+    return (
+      data.completedTasks === 0 &&
+      data.inProgressTasks === 0 &&
+      data.openTasks === 0 &&
+      data.avgTimePerTask === 0 &&
+      data.onTimeCompletionRate === 0 &&
+      Object.keys(data.timeSpentPerProject).length === 0
+    );
+  }
+
+  private handleError(error: any): string {
+    console.error('Erreur:', error);
+    if (error.status === 404) return 'Utilisateur non trouvé';
+    if (error.status === 500) return 'Erreur serveur';
+    return 'Erreur lors du chargement';
+  }
+
+
+// Méthodes utilitaires
+
+
+ private isAllZero(data: UserPerformanceResponse): boolean {
+    return data.completedTasks === 0 && 
+           data.inProgressTasks === 0 && 
+           data.openTasks === 0 &&
+           data.avgTimePerTask === 0 &&
+           data.onTimeCompletionRate === 0 &&
+           Object.keys(data.timeSpentPerProject).length === 0;
+  }
+
+hasPerformanceData(): boolean {
+  if (!this.userPerformance) return false;
+  
+  // Retourne true si au moins une propriété a une valeur significative
+  return this.userPerformance.completedTasks !== undefined || 
+         this.userPerformance.inProgressTasks !== undefined ||
+         this.userPerformance.openTasks !== undefined ||
+         this.userPerformance.avgTimePerTask !== undefined ||
+         this.userPerformance.onTimeCompletionRate !== undefined ||
+         (this.userPerformance.timeSpentPerProject && 
+          Object.keys(this.userPerformance.timeSpentPerProject).length > 0);
+}
+  
+// Méthode pour formater les projets
+ getProjectsFromPerformance(): {name: string, time: number}[] {
+    if (!this.userPerformance?.timeSpentPerProject) return [];
+    return Object.entries(this.userPerformance.timeSpentPerProject).map(([name, time]) => ({
+      name,
+      time
+    }));
+  }
+private createUserPerformanceChart(): void {
+  setTimeout(() => {
+    this.cdr.detectChanges(); // Force la mise à jour de la vue
+    
+    const ctx = document.getElementById('userPerformanceChart') as HTMLCanvasElement;
+    if (!ctx) {
+      console.warn('Canvas element not found');
+      return;
+    }
+
+    // Détruire l'ancien graphique
+    if (this.userPerformanceChart) {
+      this.userPerformanceChart.destroy();
+    }
+
+    // Créer le nouveau graphique
+    this.userPerformanceChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Terminées', 'En cours', 'Ouvertes'],
+        datasets: [{
+          label: 'Tickets',
+          data: [
+            this.userPerformance?.completedTasks || 0,
+            this.userPerformance?.inProgressTasks || 0,
+            this.userPerformance?.openTasks || 0
+          ],
+          backgroundColor: [
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(255, 206, 86, 0.6)',
+            'rgba(255, 99, 132, 0.6)'
+          ],
+          borderColor: [
+            'rgba(75, 192, 192, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(255, 99, 132, 1)'
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              precision: 0,
+              stepSize: 1
+            }
+          }
+        }
+      }
+    });
+  }, 0); // Réduisez le délai à 0
+}
 
   loadTimeTrackedData(): void {
     this.statsService.getTimeTrackedPerUser().subscribe({
@@ -181,6 +336,10 @@ export class ByuserComponent implements OnInit {
   toggleRawTimeData(): void {
     this.showRawTimeData = !this.showRawTimeData;
   }
+   getObjectKeys(obj: any): string[] {
+    return Object.keys(obj || {});
+  }
+
 
   // ... autres méthodes inchangées ...
 

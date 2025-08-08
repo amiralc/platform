@@ -8,7 +8,7 @@ export const navItems: INavData[] = [
   {
     name: 'Projects',
     url: '/projects',
-    iconComponent: { name: 'cil-folder' }
+    iconComponent: { name: 'cil-layers' }
   },
   {
     name: 'Task',

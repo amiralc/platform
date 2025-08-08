@@ -1,70 +1,111 @@
-<div class="container-fluid mt--7" *ngIf="!isLoading && user; else loading">
+<div class="profile-container" *ngIf="!isLoading && user; else loading">
   <div class="row">
-    <div class="col-xl-4 order-xl-1">
-      <div class="card card-profile shadow">
-        <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4"></div>
-        <div class="card-body pt-0">
-          <div class="text-center">
-            <div class="avatar-upload mb-3">
-              <div class="avatar-preview">
-                <img [src]="user.profileImage || 'assets/img/theme/default-avatar.png'"
-                     class="rounded-circle" width="150" height="150" alt="User avatar">
-              </div>
+    <!-- Profile Card -->
+    <div class="col-lg-4">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="avatar-container">
+            <img [src]="user.profileImage || 'assets/img/theme/default-avatar.png'"
+                 class="profile-avatar" alt="Profile picture">
+            <div class="avatar-overlay">
+              <svg viewBox="0 0 24 24" class="camera-icon">
+                <path fill="white" d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z"/>
+              </svg>
             </div>
-            <h5 class="h3"> {{ user.firstname }} {{ user.lastname }}</h5>
-            <div class="h5 font-weight-300">
-              <i class="ni location_pin mr-2"></i>{{ user.position || 'Position not set' }}
-            </div>
-            <div class="mt-4">
-              <span class="badge badge-pill badge-primary">{{ user.department || 'No department' }}</span>
-            </div>
+          </div>
+          <h2 class="profile-name">{{ user.firstname }} {{ user.lastname }}</h2>
+          <p class="profile-position">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path fill="#667eea" d="M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M7,7H17V5H19V19H5V5H7V7Z"/>
+            </svg>
+            {{ user.position || 'Position not specified' }}
+          </p>
+          <div class="profile-department">
+            <span class="department-badge">{{ user.department || 'No department' }}</span>
+          </div>
+        </div>
+
+        <div class="profile-details">
+          <div class="detail-item">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path fill="#667eea" d="M20,8L12,13L4,8V6L12,11L20,6M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/>
+            </svg>
+            <span>{{ user.email }}</span>
+          </div>
+          <div class="detail-item" *ngIf="user.phone">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path fill="#667eea" d="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38L15.41,15.18C15.69,14.9 16.08,14.82 16.43,14.93C17.55,15.3 18.75,15.5 20,15.5A1,1 0 0,1 21,16.5V20A1,1 0 0,1 20,21A17,17 0 0,1 3,4A1,1 0 0,1 4,3H7.5A1,1 0 0,1 8.5,4C8.5,5.25 8.7,6.45 9.07,7.57C9.18,7.92 9.1,8.31 8.82,8.59L6.62,10.79Z"/>
+            </svg>
+            <span>{{ user.phone }}</span>
+          </div>
+          <div class="detail-item" *ngIf="user.joinDate">
+            <svg viewBox="0 0 24 24" class="icon">
+              <path fill="#667eea" d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"/>
+            </svg>
+            <span>Member since {{ user.joinDate | date }}</span>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="col-xl-8 order-xl-2">
-      <div class="card bg-secondary shadow">
-        <div class="card-header bg-white border-0">
-          <div class="row align-items-center">
-            <div class="col-8">
-              <h3 class="mb-0">Edit Profile</h3>
-            </div>
-          </div>
+    <!-- Edit Form -->
+    <div class="col-lg-8">
+      <div class="edit-profile-card">
+        <div class="card-header">
+          <h3>
+            <svg viewBox="0 0 24 24" class="icon">
+              <path fill="#667eea" d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+            </svg>
+            Edit Profile
+          </h3>
         </div>
 
         <div class="card-body">
           <form (ngSubmit)="saveUserProfile()" #profileForm="ngForm" novalidate>
-            <h6 class="heading-small text-muted mb-4">User information</h6>
-            <div class="pl-lg-4">
-              <div class="row">
-             
-
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="firstName" class="form-control-label">First name</label>
-                    <input id="firstName" type="text" class="form-control" [(ngModel)]="user.firstname" name="firstname" required>
+            <!-- Personal Information -->
+            <div class="form-section">
+              <h4 class="section-title">
+                <svg viewBox="0 0 24 24" class="icon">
+                  <path fill="#667eea" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z"/>
+                </svg>
+                Personal Information
+              </h4>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="firstName" type="text" class="form-control" [(ngModel)]="user.firstname" 
+                             name="firstname" required placeholder=" ">
+                      <label for="firstName">First Name</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="lastName" class="form-control-label">Last name</label>
-                    <input id="lastName" type="text" class="form-control" [(ngModel)]="user.lastname" name="lastname" required>
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="lastName" type="text" class="form-control" [(ngModel)]="user.lastname" 
+                             name="lastname" required placeholder=" ">
+                      <label for="lastName">Last Name</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="email" class="form-control-label">Email address</label>
-                    <input id="email" type="email" class="form-control" [(ngModel)]="user.email" name="email" required email>
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="email" type="email" class="form-control" [(ngModel)]="user.email" 
+                             name="email" required email placeholder=" ">
+                      <label for="email">Email Address</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="phone" class="form-control-label">Phone</label>
-                    <input id="phone" type="text" class="form-control" [(ngModel)]="user.phone" name="phone">
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="phone" type="text" class="form-control" [(ngModel)]="user.phone" 
+                             name="phone" placeholder=" ">
+                      <label for="phone">Phone</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -72,39 +113,68 @@
 
             <hr class="my-4">
 
-            <h6 class="heading-small text-muted mb-4">Professional information</h6>
-            <div class="pl-lg-4">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group">
-                    <label for="position" class="form-control-label">Position</label>
-                    <input id="position" type="text" class="form-control" [(ngModel)]="user.position" name="position">
+            <!-- Professional Information -->
+            <div class="form-section">
+              <h4 class="section-title">
+                <svg viewBox="0 0 24 24" class="icon">
+                  <path fill="#667eea" d="M10,2H14A2,2 0 0,1 16,4V6H20A2,2 0 0,1 22,8V19A2,2 0 0,1 20,21H4C2.89,21 2,20.1 2,19V8C2,6.89 2.89,6 4,6H8V4C8,2.89 8.89,2 10,2M14,6V4H10V6H14Z"/>
+                </svg>
+                Professional Information
+              </h4>
+              <div class="pl-lg-4">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group floating-label">
+                      <input id="position" type="text" class="form-control" [(ngModel)]="user.position" 
+                             name="position" placeholder=" ">
+                      <label for="position">Position</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="department" class="form-control-label">Department</label>
-                    <input id="department" type="text" class="form-control" [(ngModel)]="user.department" name="department">
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="department" type="text" class="form-control" [(ngModel)]="user.department" 
+                             name="department" placeholder=" ">
+                      <label for="department">Department</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
-                </div>
 
-                <div class="col-lg-6">
-                  <div class="form-group">
-                    <label for="joinDate" class="form-control-label">Join Date</label>
-                    <input id="joinDate" type="date" class="form-control" [(ngModel)]="user.joinDate" name="joinDate">
+                  <div class="col-lg-6">
+                    <div class="form-group floating-label">
+                      <input id="joinDate" type="date" class="form-control" [(ngModel)]="user.joinDate" 
+                             name="joinDate" placeholder=" ">
+                      <label for="joinDate">Join Date</label>
+                      <div class="underline"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div class="text-center">
-              <button type="submit" class="btn btn-primary mt-4" [disabled]="profileForm.invalid || isSaving">
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <button type="submit" class="btn btn-save" [disabled]="profileForm.invalid || isSaving">
+                <svg viewBox="0 0 24 24" class="btn-icon">
+                  <path fill="white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"/>
+                </svg>
                 {{ isSaving ? 'Saving...' : 'Save Changes' }}
+              </button>
+              
+              <button type="button" class="btn btn-cancel" (click)="loadUserProfile()" [disabled]="isSaving">
+                <svg viewBox="0 0 24 24" class="btn-icon">
+                  <path fill="#666" d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.03 17.15,8 12.5,8Z"/>
+                </svg>
+                Cancel
               </button>
             </div>
 
+            <!-- Error Message -->
             <div *ngIf="errorMessage" class="alert alert-danger mt-3" role="alert">
+              <svg viewBox="0 0 24 24" class="alert-icon">
+                <path fill="#721c24" d="M11,15H13V17H11V15M11,7H13V13H11V7M12,2C6.47,2 2,6.5 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20Z"/>
+              </svg>
               {{ errorMessage }}
             </div>
           </form>
@@ -115,10 +185,12 @@
 </div>
 
 <ng-template #loading>
-  <div class="text-center my-5">
-    <div class="spinner-border" role="status">
-      <span class="sr-only">Loading...</span>
+  <div class="loading-container">
+    <div class="loading-spinner">
+      <svg class="spinner" viewBox="0 0 50 50">
+        <circle class="path" cx="25" cy="25" r="20" fill="none" stroke="#667eea" stroke-width="5"></circle>
+      </svg>
+      <p>Loading profile...</p>
     </div>
-    <p>Loading profile...</p>
   </div>
 </ng-template>

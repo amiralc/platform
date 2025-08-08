@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
 import { UserService, User } from '../../services/user.service';
 import { HttpErrorResponse } from '@angular/common/http';
-
 
 interface UserProfile extends User {
   position?: string | null;
@@ -18,7 +16,7 @@ interface UserProfile extends User {
   templateUrl: './userprofile.component.html',
   styleUrls: ['./userprofile.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule] // Uniquement les imports de base
 })
 export class UserprofileComponent implements OnInit {
   user: UserProfile = {

@@ -45,18 +45,27 @@
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
                 <td>
-                  <ng-container *ngIf="project.tickets?.length; else noTickets">
-                    <div *ngFor="let ticket of project.tickets" 
-                         class="badge bg-secondary me-1 mb-1"
-                         (click)="openTicketModal(ticket)"
-                         style="cursor: pointer;">
-                      {{ ticket.title || '#'+ticket.ticket_jira_id }}
-                    </div>
-                  </ng-container>
-                  <ng-template #noTickets>
-                    <span class="text-muted">No tickets</span>
-                  </ng-template>
-                </td>
+                 <td>
+  <ng-container *ngIf="project.tickets?.length; else noTickets">
+    <div class="tickets-container">
+      <div *ngFor="let ticket of project.tickets" 
+           class="ticket-badge"
+           [ngClass]="{
+             'ticket-open': ticket.status === 'OPEN',
+             'ticket-in-progress': ticket.status === 'IN_PROGRESS',
+             'ticket-resolved': ticket.status === 'RESOLVED',
+             'ticket-closed': ticket.status === 'CLOSED',
+             'ticket-unassigned': !ticket.status
+           }"
+           (click)="openTicketModal(ticket)">
+        {{ ticket.title || '#'+ticket.ticket_jira_id }}
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #noTickets>
+    <span class="text-muted">No tickets</span>
+  </ng-template>
+</td>
                 <td>
                   <button
                     class="btn btn-sm btn-info"
