@@ -9,6 +9,7 @@ import { StatisticsService,UserPerformanceResponse } from '../../../services/sta
 import { ChangeDetectorRef } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 
+
 interface StatusStat {
   status: string;
   count: number;
@@ -72,6 +73,8 @@ export class ByuserComponent implements OnInit {
   performanceError?: string;
   isLoadingPerformance = false;
   userPerformanceChart?: Chart;
+  availableUsers: any[] = []; // Remplissez ce tableau avec vos utilisateurs
+currentChartType: string = 'bar';
   
 
  constructor(
@@ -85,6 +88,7 @@ export class ByuserComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("Initializing ByUser component");
+    
     this.loadAllData();
     this.loadProjectsTicketStats();
     
@@ -116,18 +120,18 @@ export class ByuserComponent implements OnInit {
   }
 
   console.log('Chargement des performances pour user ID:', this.selectedUserId);
-  this.isLoadingPerformance = true;
+  //this.isLoadingPerformance = true;
   this.performanceError = undefined;
   this.userPerformance = undefined;
 
   this.statsService.getUserPerformanceStats(this.selectedUserId)
-    .pipe(
+   /* .pipe(
       finalize(() => {
         console.log('Chargement terminé', this.userPerformance);
         this.isLoadingPerformance = false;
         this.cdr.detectChanges();
       })
-    )
+    )*/
     .subscribe({
       next: (response) => {
         console.log('Réponse API:', response);
@@ -197,22 +201,23 @@ hasPerformanceData(): boolean {
     }));
   }
 private createUserPerformanceChart(): void {
-  setTimeout(() => {
-    this.cdr.detectChanges(); // Force la mise à jour de la vue
+  console.log('display method createUserPerformanceChart ')
+ 
+   // this.cdr.detectChanges(); // Force la mise à jour de la vue
     
-    const ctx = document.getElementById('userPerformanceChart') as HTMLCanvasElement;
+  /*  const ctx = document.getElementById('userPerformanceChart') as HTMLCanvasElement;
     if (!ctx) {
       console.warn('Canvas element not found');
       return;
-    }
+    }*/
 
     // Détruire l'ancien graphique
-    if (this.userPerformanceChart) {
+   /* if (this.userPerformanceChart) {
       this.userPerformanceChart.destroy();
-    }
+    }*/
 
     // Créer le nouveau graphique
-    this.userPerformanceChart = new Chart(ctx, {
+   /* this.userPerformanceChart = new Chart(ctx, {
       type: 'bar',
       data: {
         labels: ['Terminées', 'En cours', 'Ouvertes'],
@@ -249,8 +254,8 @@ private createUserPerformanceChart(): void {
           }
         }
       }
-    });
-  }, 0); // Réduisez le délai à 0
+    });*/
+
 }
 
   loadTimeTrackedData(): void {
@@ -676,6 +681,8 @@ private createUserPerformanceChart(): void {
   }
 
   private convertObjectToArray(stats: { [key: string]: number }): ApiAssignmentStat[] {
+    console.log('testing in convertObjectToArray ');
+    
     return Object.entries(stats).map(([userId, ticketCount]) => ({
       userId: parseInt(userId),
       userName: `User ${userId}`,

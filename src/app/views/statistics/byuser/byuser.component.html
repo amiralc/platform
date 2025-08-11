@@ -2,75 +2,75 @@
   <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
 
   <div class="row mt-4 g-4">
-    <!-- Carte : Performances utilisateur -->
+    <!-- Card: User Performance -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-info text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Performance de l'utilisateur</h6>
+          <h6 class="mb-0">User Performance</h6>
         </div>
         <div class="card-body">
-          <!-- Champ de saisie User ID -->
+          <!-- User ID Input Field -->
           <div class="mb-3">
-            <label for="userIdInput" class="form-label">ID Utilisateur</label>
+            <label for="userIdInput" class="form-label">User ID</label>
             <div class="input-group">
               <input type="number" id="userIdInput" class="form-control" 
                      [(ngModel)]="selectedUserId" 
                      (keyup.enter)="loadUserPerformance()">
               <button class="btn btn-primary" (click)="loadUserPerformance()" 
                       [disabled]="!selectedUserId || isLoadingPerformance">
-                <span *ngIf="!isLoadingPerformance">Charger</span>
+                <span *ngIf="!isLoadingPerformance">Load</span>
                 <span *ngIf="isLoadingPerformance" class="spinner-border spinner-border-sm"></span>
               </button>
             </div>
           </div>
 
-          <!-- Indicateur de chargement -->
+          <!-- Loading Indicator -->
           <div *ngIf="isLoadingPerformance" class="text-center my-3">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Chargement...</span>
+              <span class="visually-hidden">Loading...</span>
             </div>
           </div>
 
-          <!-- Message d'erreur -->
+          <!-- Error Message -->
           <div *ngIf="performanceError" class="alert alert-danger mt-3">
             {{ performanceError }}
           </div>
 
-          <!-- Contenu des performances -->
+          <!-- Performance Content -->
           <div *ngIf="userPerformance && !isLoadingPerformance">
             <div class="performance-data-container">
-              <!-- Statistiques principales -->
+              <!-- Main Statistics -->
               <div class="performance-stats">
                 <div class="stat-item">
-                  <span class="stat-label">Tâches terminées:</span> 
+                  <span class="stat-label">Completed Tasks:</span> 
                   <span class="stat-value">{{ userPerformance.completedTasks || 0 }}</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-label">En cours:</span> 
+                  <span class="stat-label">In Progress:</span> 
                   <span class="stat-value">{{ userPerformance.inProgressTasks || 0 }}</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-label">Ouvertes:</span> 
+                  <span class="stat-label">Open:</span> 
                   <span class="stat-value">{{ userPerformance.openTasks || 0 }}</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-label">Temps moyen:</span> 
+                  <span class="stat-label">Avg. Time:</span> 
                   <span class="stat-value">{{ (userPerformance.avgTimePerTask || 0) | number:'1.2-2' }} h</span>
                 </div>
                 <div class="stat-item">
-                  <span class="stat-label">Taux à temps:</span> 
+                  <span class="stat-label">On-Time Rate:</span> 
                   <span class="stat-value">{{ ((userPerformance.onTimeCompletionRate || 0) / 100) | percent:'1.2-2' }}</span>
                 </div>
               </div>
 
-              <!-- Graphique -->
+              <!-- Chart -->
               <div class="chart-container mt-3" style="height: 250px;">
                 <canvas id="userPerformanceChart"></canvas>
               </div>
 
-              <!-- Temps par projet -->
+              <!-- Time per Project -->
               <div *ngIf="userPerformance.timeSpentPerProject && getObjectKeys(userPerformance.timeSpentPerProject).length > 0" class="mt-3">
-                <h6>Temps passé par projet :</h6>
+                <h6>Time Spent by Project:</h6>
                 <ul class="list-group">
                   <li class="list-group-item d-flex justify-content-between align-items-center"
                       *ngFor="let project of getProjectsFromPerformance()">
@@ -85,11 +85,11 @@
       </div>
     </div>
 
-    <!-- Autres cartes (inchangées) -->
+    <!-- Other Cards (unchanged structure) -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Temps suivi par utilisateur</h6>
+          <h6 class="mb-0">Time Tracked by User</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
           <canvas id="timeTrackedChart"></canvas>
@@ -100,7 +100,7 @@
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
-          <h6 class="mb-0">Utilisateurs par équipe</h6>
+          <h6 class="mb-0">Users by Team</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
           <canvas id="usersPerTeamChart"></canvas>
@@ -111,7 +111,7 @@
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-warning text-dark rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Attribution des tickets</h6>
+          <h6 class="mb-0">Ticket Assignment</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="assignmentChart" style="max-height: 160px;"></canvas>
@@ -122,7 +122,7 @@
     <div class="col-12 col-lg-6" *ngIf="projectsChart">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Tickets par projet</h6>
+          <h6 class="mb-0">Tickets by Project</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
           <canvas id="projectsChart"></canvas>
@@ -133,7 +133,7 @@
     <div class="col-12 col-lg-6" *ngIf="statusChart">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-primary text-white rounded-top-4 py-2 px-3">
-          <h6 class="mb-0">Statut des tickets</h6>
+          <h6 class="mb-0">Ticket Status</h6>
         </div>
         <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
           <canvas id="statusChart"></canvas>

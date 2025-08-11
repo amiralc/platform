@@ -43,27 +43,21 @@ export class UserprofileComponent implements OnInit {
   }
 
   loadUserProfile(): void {
-    this.isLoading = true;
-    this.errorMessage = null;
+  this.isLoading = true;
+  this.errorMessage = null;
 
-    this.userService.getUsers().subscribe({
-      next: (users: User[]) => {
-        if (users.length > 0) {
-          
-          this.user = { 
-            ...this.user, 
-            ...users[0]  
-          };
-        }
-        this.isLoading = false;
-      },
-      error: (err: HttpErrorResponse) => {
-        this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Échec du chargement du profil';
-        console.error('Erreur de chargement:', err);
-      }
-    });
-  }
+  this.userService.getCurrentUser().subscribe({
+    next: (user: User) => {
+      this.user = user; 
+      this.isLoading = false;
+    },
+    error: (err: HttpErrorResponse) => {
+      this.isLoading = false;
+      this.errorMessage = err.error?.message || 'Échec du chargement du profil';
+      console.error('Erreur de chargement:', err);
+    }
+  });
+}
 
   saveUserProfile(): void {
     if (!this.user.user_id) {

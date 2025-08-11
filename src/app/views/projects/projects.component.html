@@ -44,7 +44,7 @@
               <tr *ngFor="let project of paginatedProjects; trackBy: trackByProjectId">
                 <td>{{ project.name }}</td>
                 <td>{{ project.description }}</td>
-                <td>
+                
                  <td>
   <ng-container *ngIf="project.tickets?.length; else noTickets">
     <div class="tickets-container">
