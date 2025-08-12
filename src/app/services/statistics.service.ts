@@ -5,7 +5,6 @@ import { catchError,map } from 'rxjs/operators';
 import {  tap } from 'rxjs/operators';
 
 export interface UserPerformanceResponse {
-
   completedTasks: number;
   inProgressTasks: number;
   openTasks: number;
@@ -17,6 +16,7 @@ interface TeamProjectCount {
   teamName: string;
   projectCount: number;
 }
+
 
 @Injectable({
   providedIn: 'root'
@@ -59,37 +59,12 @@ private basete="http://localhost:8083/api/teams"
    getDetailedUserAssignments(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/detailed-assignments`);
   }
- getUserPerformanceStats(userId: number): Observable<UserPerformanceResponse> {
-    return this.http.get<any>(`${this.baseUrl}/user-performance`, {
-      params: { userId: userId.toString() }
-    }).pipe(
-      map(response => this.normalizePerformanceResponse(response)),
-      catchError(error => this.handlePerformanceError(error))
-    );
-  }
- private normalizePerformanceResponse(response: any): UserPerformanceResponse {
-    // Si la réponse est un tableau, prendre le premier élément
-    const data = Array.isArray(response) ? response[0] : response;
 
-    return {
-      completedTasks: data.completedTasks ?? data.CompletedTasks ?? 0,
-      inProgressTasks: data.inProgressTasks ?? data.iInProgressTasks ?? 0,
-      openTasks: data.openTasks ?? data.OpenTasks ?? 0,
-      avgTimePerTask: data.avgTimePerTask ?? data.AvgTimePerTask ?? 0,
-      onTimeCompletionRate: data.onTimeCompletionRate ?? data.OnTimeCompletionRate ?? 0,
-      timeSpentPerProject: data.timeSpentPerProject ?? data.TimeSpentPerProject ?? {}
-    };
-  }
 
-  private handlePerformanceError(error: any): Observable<never> {
-    console.error('Performance API Error:', error);
-    
-    let errorMessage = 'Erreur lors du chargement des performances';
-    if (error.status === 404) errorMessage = 'Utilisateur non trouvé';
-    if (error.status === 500) errorMessage = 'Erreur serveur';
-    
-    return throwError(() => new Error(errorMessage));
-  }
+
+getUserPerformance(userId: number): Observable<UserPerformanceResponse> {
+  return this.http.get<UserPerformanceResponse>(`${this.baseUrl}/user-performance?userId=${userId}`);
+}
  
 
 getProjectsPerTeam(): Observable<TeamProjectCount[]> {

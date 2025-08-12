@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { StatisticsService,UserPerformanceResponse } from '../../../services/statistics.service';
 import { ChangeDetectorRef } from '@angular/core';
 import { finalize } from 'rxjs/operators';
+import { ChartType } from 'chart.js';
 
 
 interface StatusStat {
@@ -74,7 +75,7 @@ export class ByuserComponent implements OnInit {
   isLoadingPerformance = false;
   userPerformanceChart?: Chart;
   availableUsers: any[] = []; // Remplissez ce tableau avec vos utilisateurs
-currentChartType: string = 'bar';
+currentChartType: ChartType = 'bar';
   
 
  constructor(
@@ -112,41 +113,31 @@ currentChartType: string = 'bar';
       this.createUsersPerTeamChart();
     });
   }
-
- loadUserPerformance(): void {
-  if (!this.selectedUserId) {
-    this.performanceError = 'Veuillez entrer un ID utilisateur valide';
-    return;
-  }
-
-  console.log('Chargement des performances pour user ID:', this.selectedUserId);
-  //this.isLoadingPerformance = true;
-  this.performanceError = undefined;
+  loadUserPerformance(userId: number): void {
+  this.isLoadingPerformance = true;
+  this.performanceError = '';
   this.userPerformance = undefined;
 
-  this.statsService.getUserPerformanceStats(this.selectedUserId)
-   /* .pipe(
-      finalize(() => {
-        console.log('Chargement terminé', this.userPerformance);
-        this.isLoadingPerformance = false;
-        this.cdr.detectChanges();
-      })
-    )*/
+  this.statsService.getUserPerformance(userId)
+    .pipe(finalize(() => this.isLoadingPerformance = false))
     .subscribe({
-      next: (response) => {
-        console.log('Réponse API:', response);
-        this.userPerformance = response;
-        if (!this.hasPerformanceData()) {
-          this.performanceError = 'Aucune donnée de performance disponible';
+      next: (data) => {
+        if (this.isDataEmpty(data)) {
+          this.performanceError = 'Aucune donnée de performance disponible pour cet utilisateur.';
+          this.userPerformance = undefined;
+        } else {
+          this.userPerformance = data;
+          this.createUserPerformanceChart();
         }
-        this.createUserPerformanceChart();
       },
-      error: (err) => {
-        console.error('Erreur API:', err);
-        this.performanceError = this.handleError(err);
+      error: (error) => {
+        this.performanceError = this.handleError(error);
+        this.userPerformance = undefined;
       }
     });
 }
+
+
   // Méthodes utilitaires
   private isDataEmpty(data: UserPerformanceResponse): boolean {
     return (
@@ -194,68 +185,109 @@ hasPerformanceData(): boolean {
   
 // Méthode pour formater les projets
  getProjectsFromPerformance(): {name: string, time: number}[] {
-    if (!this.userPerformance?.timeSpentPerProject) return [];
-    return Object.entries(this.userPerformance.timeSpentPerProject).map(([name, time]) => ({
-      name,
-      time
-    }));
-  }
+  if (!this.userPerformance?.timeSpentPerProject) return [];
+  return Object.entries(this.userPerformance.timeSpentPerProject)
+    .map(([name, time]) => ({ name, time }))
+    .sort((a, b) => b.time - a.time);
+}
+getMaxProjectTime(currentTime: number): number {
+  if (!this.userPerformance?.timeSpentPerProject) return currentTime || 1;
+  const times = Object.values(this.userPerformance.timeSpentPerProject);
+  return Math.max(...times, currentTime, 1);
+}
 private createUserPerformanceChart(): void {
-  console.log('display method createUserPerformanceChart ')
- 
-   // this.cdr.detectChanges(); // Force la mise à jour de la vue
-    
-  /*  const ctx = document.getElementById('userPerformanceChart') as HTMLCanvasElement;
-    if (!ctx) {
-      console.warn('Canvas element not found');
-      return;
-    }*/
+  if (this.userPerformanceChart) {
+    this.userPerformanceChart.destroy();
+  }
 
-    // Détruire l'ancien graphique
-   /* if (this.userPerformanceChart) {
-      this.userPerformanceChart.destroy();
-    }*/
+  const ctx = document.getElementById('userPerformanceChart') as HTMLCanvasElement;
+  if (!ctx || !this.userPerformance) return;
 
-    // Créer le nouveau graphique
-   /* this.userPerformanceChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Terminées', 'En cours', 'Ouvertes'],
-        datasets: [{
-          label: 'Tickets',
-          data: [
-            this.userPerformance?.completedTasks || 0,
-            this.userPerformance?.inProgressTasks || 0,
-            this.userPerformance?.openTasks || 0
-          ],
-          backgroundColor: [
-            'rgba(75, 192, 192, 0.6)',
-            'rgba(255, 206, 86, 0.6)',
-            'rgba(255, 99, 132, 0.6)'
-          ],
-          borderColor: [
-            'rgba(75, 192, 192, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(255, 99, 132, 1)'
-          ],
-          borderWidth: 1
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-          y: {
-            beginAtZero: true,
-            ticks: {
-              precision: 0,
-              stepSize: 1
-            }
+  // Données dynamiques
+  const data = [
+    this.userPerformance.completedTasks || 0,
+    this.userPerformance.inProgressTasks || 0,
+    this.userPerformance.openTasks || 0
+  ];
+
+  // Création du graphique (choisissez 'bar' ou 'line')
+  this.userPerformanceChart = new Chart(ctx, {
+    type: this.currentChartType, // 'bar' ou 'line' (vous pouvez ajouter un toggle)
+    data: {
+      labels: ['Terminées', 'En Cours', 'Ouvertes'],
+      datasets: [{
+        label: 'Tâches',
+        data: data,
+        backgroundColor: [
+          'rgba(75, 192, 192, 0.7)', // Vert
+          'rgba(255, 206, 86, 0.7)',  // Jaune
+          'rgba(255, 99, 132, 0.7)'   // Rouge
+        ],
+        borderColor: [
+          'rgba(75, 192, 192, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(255, 99, 132, 1)'
+        ],
+        borderWidth: 2,
+        tension: 0.4 // Pour une courbe plus lisse (si type='line')
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Performance des Tâches',
+          font: { size: 16 }
+        },
+        tooltip: {
+          callbacks: {
+            label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y}`
           }
         }
+      },
+      scales: {
+        y: { beginAtZero: true }
       }
-    });*/
+    }
+  });
+}
+private createProjectTimeChart(): void {
+  const ctx = document.getElementById('projectTimeChart') as HTMLCanvasElement;
+  if (!ctx || !this.userPerformance?.timeSpentPerProject) return;
 
+  const projects = this.getProjectsFromPerformance();
+  const labels = projects.map(p => p.name);
+  const data = projects.map(p => p.time);
+
+  new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: labels,
+      datasets: [{
+        data: data,
+        backgroundColor: [
+          '#4e73df', '#1cc88a', '#36b9cc', '#f6c23e',
+          '#e74a3b', '#6610f2', '#fd7e14', '#20c9a6'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'right'
+        }
+      }
+    }
+  });
+}
+onLoadClick(): void {
+  if (this.selectedUserId) {
+    this.loadUserPerformance(this.selectedUserId);
+  }
 }
 
   loadTimeTrackedData(): void {
@@ -868,4 +900,9 @@ private createUserPerformanceChart(): void {
   getMaxProjectTickets(): number {
     return Math.max(...this.projectsTicketStats.map(p => p.ticketCount), 1);
   }
+  toggleChartType(): void {
+  this.currentChartType = this.currentChartType === 'bar' ? 'line' : 'bar';
+  this.createUserPerformanceChart(); // Re-crée le graphique
+}
+
 }

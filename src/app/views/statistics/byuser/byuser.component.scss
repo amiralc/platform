@@ -66,3 +66,43 @@
   width: 100%;
   min-height: 250px;
 }
+.performance-chart-container {
+  position: relative;
+  height: 300px;
+  padding: 16px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.performance-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+
+  .stat-item {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    
+    .stat-label {
+      display: block;
+      font-weight: 500;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+    
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4e73df;
+    }
+  }
+}
