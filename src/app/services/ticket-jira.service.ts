@@ -37,6 +37,13 @@ interface UserAssignment {
   email?: string;
   // autres propriétés si nécessaire
 }
+interface ComplexityStats {
+  "Non classé": number;
+  "Peu complexe (1-3)": number;
+  "Moyennement complexe (4-7)": number;
+  "Très complexe (8-10)": number;
+  "Hors échelle": number;
+}
 interface AssignmentStat {
   userId: string;
   count: number;
@@ -122,6 +129,11 @@ getProjectsWithTicketCount(): Observable<{projectName: string, ticketCount: numb
   getTicketsByProject(projectId: number): Observable<TicketJira[]> {
     return this.http.get<TicketJira[]>(`${this.baseUrl}/by-project/${projectId}`);
   }
+   getTicketsByComplexity(): Observable<ComplexityStats> {
+    return this.http.get<ComplexityStats>(`${this.baseUrl}/complexity-categories`);
+  }
 
+ 
 
 }
+

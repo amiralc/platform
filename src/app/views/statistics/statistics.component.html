@@ -1,20 +1,27 @@
-<div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
-  <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
+<div class="row mt-4 g-4">
 
- 
-
-  <div class="row mt-4 g-4">
-    <!-- Complexity vs Estimated -->
-    <div class="col-12 col-lg-6">
-      <div class="card shadow-sm rounded-4 border-0 h-100">
-        <div class="card-header bg-purple text-white rounded-top-4 py-2 px-3" style="background-color: #6f42c1;">
-          <h6 class="mb-0">Complexity vs Estimated Time</h6>
-        </div>
-        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
-          <canvas id="complexityChart"></canvas>
-        </div>
+  <!-- Complexity vs Estimated -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-purple text-white rounded-top-4 py-2 px-3" style="background-color: #6f42c1;">
+        <h6 class="mb-0">Complexity vs Estimated Time</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="complexityChart"></canvas>
       </div>
     </div>
-
   </div>
+
+  <!-- Projects per Team -->
+  <div class="col-12 col-lg-6">
+    <div class="card shadow-sm rounded-4 border-0 h-100">
+      <div class="card-header bg-success text-white rounded-top-4 py-2 px-3">
+        <h6 class="mb-0">Projects per Team</h6>
+      </div>
+      <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <canvas id="projectsPerTeamChart"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>

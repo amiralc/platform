@@ -1,20 +1,21 @@
-<!-- Button to open modal -->
+<!-- userlist.component.html -->
 <div class="container-fluid mt--7">
-  <div class="row mb-3">
-    <div class="col">
-      <button class="btn btn-primary" (click)="openCreateModal()">
-        <i class="fas fa-plus"></i> New
-      </button>
-    </div>
-  </div>
-
-  <!-- User Table -->
   <div class="row">
     <div class="col">
       <div class="card shadow">
-        <div class="card-header border-0">
-          <h3 class="mb-0"><i class="fas fa-users me-2"></i>User Table</h3>
+
+        <!-- Card header with New button on right -->
+        <div class="card-header border-0 d-flex justify-content-between align-items-center">
+          <h3 class="mb-0">
+            <i class="fas fa-users me-2"></i>User Table
+          </h3>
+
+          <!-- IMPORTANT: type="button" to avoid accidental form submit -->
+          <button type="button" class="btn btn-primary" (click)="openCreateModal()">
+            <i class="fas fa-plus"></i> New
+          </button>
         </div>
+
         <div class="table-responsive">
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
@@ -27,23 +28,24 @@
                 <th><i class="fas fa-cog me-1"></i> Actions</th>
               </tr>
             </thead>
-           <tbody *ngIf="paginatedUsers.length > 0; else noUsers">
+            <tbody *ngIf="paginatedUsers.length > 0; else noUsers">
               <tr *ngFor="let user of paginatedUsers">
-            <td>{{ user.firstname || 'No firstname' }}</td>
-<td>{{ user.lastname || 'No lastname' }}</td>
+                <td>{{ user.firstname || 'No firstname' }}</td>
+                <td>{{ user.lastname || 'No lastname' }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.phone }}</td>
                 <td>{{ user.role }}</td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-2" (click)="openEditModal(user)" title="Edit">
+                  <button type="button" class="btn btn-sm btn-warning me-2" (click)="openEditModal(user)" title="Edit">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button class="btn btn-sm btn-danger" (click)="confirmDelete(user)" title="Delete">
+                  <button type="button" class="btn btn-sm btn-danger" (click)="confirmDelete(user)" title="Delete">
                     <i class="fas fa-trash-alt"></i>
                   </button>
                 </td>
               </tr>
             </tbody>
+
             <ng-template #noUsers>
               <tbody>
                 <tr>
@@ -55,7 +57,7 @@
             </ng-template>
           </table>
 
-           <!-- Pagination -->
+          <!-- Pagination -->
           <div class="d-flex justify-content-between align-items-center p-3 border-top">
             <div class="text-muted small">
               Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to 
@@ -86,15 +88,19 @@
                 <option value="50">50</option>
               </select>
             </div>
-          </div>
-        </div>
-      </div>
+          </div> <!-- /pagination -->
+        </div> <!-- /table-responsive -->
+
+      </div> <!-- /card -->
     </div>
   </div>
 </div>
 
-<!-- Modernized Modal (Create/Edit User) -->
+<!-- Modal overlay & content (placed at end of template) -->
+<!-- overlay catches outside clicks -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>
+
+<!-- wrapper centers the modal -->
 <div class="modal-content-wrapper user-modal" *ngIf="isModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
@@ -102,7 +108,7 @@
         <i class="fas" [ngClass]="isCreating ? 'fa-user-plus' : 'fa-user-edit'"></i>
         {{ isCreating ? 'Create User' : 'Edit User' }}
       </h3>
-      <button (click)="closeModal()" class="close-btn">
+      <button (click)="closeModal()" class="close-btn" type="button">
         <i class="fas fa-times"></i>
       </button>
     </div>

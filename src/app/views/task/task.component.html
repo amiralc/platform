@@ -206,68 +206,77 @@
   </div>
   <div class="modal-backdrop fade" [class.show]="isCreateModalOpen" [style.display]="isCreateModalOpen ? 'block' : 'none'"></div>
 
-  <!-- Edit Modal (inchangé) -->
-  <div class="modal fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            <i class="fas fa-edit me-2"></i>Edit Ticket
-          </h5>
-          <button type="button" class="btn-close" (click)="closeModal()"></button>
-        </div>
-        <div class="modal-body">
-          <form [formGroup]="editForm">
-            <div class="mb-3">
-              <label><i class="fas fa-heading me-1"></i>Title</label>
-              <input type="text" class="form-control" formControlName="title" />
-              <div *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="text-danger">
-                <i class="fas fa-exclamation-circle me-1"></i>Title is required
-              </div>
+<!-- Edit Modal -->
+<div class="modal fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-edit me-2"></i>Edit Ticket
+        </h5>
+        <button type="button" class="btn-close" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="editForm">
+          <div class="mb-3">
+            <label><i class="fas fa-heading me-1"></i>Title</label>
+            <input type="text" class="form-control" formControlName="title" />
+            <div *ngIf="editForm.get('title')?.invalid && editForm.get('title')?.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle me-1"></i>Title is required
             </div>
+          </div>
 
-            <div class="mb-3">
-              <label><i class="fas fa-align-left me-1"></i>Description</label>
-              <textarea class="form-control" formControlName="description" rows="3"></textarea>
-              <div *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="text-danger">
-                <i class="fas fa-exclamation-circle me-1"></i>Description is required
-              </div>
+          <div class="mb-3">
+            <label><i class="fas fa-align-left me-1"></i>Description</label>
+            <textarea class="form-control" formControlName="description" rows="3"></textarea>
+            <div *ngIf="editForm.get('description')?.invalid && editForm.get('description')?.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle me-1"></i>Description is required
             </div>
+          </div>
 
-            <div class="mb-3">
-              <label><i class="fas fa-project-diagram me-1"></i>Project</label>
-              <select class="form-control" formControlName="projectId">
-                <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
-              </select>
-              <div *ngIf="editForm.get('projectId')?.invalid && editForm.get('projectId')?.touched" class="text-danger">
-                <i class="fas fa-exclamation-circle me-1"></i>Project is required
-              </div>
+          <div class="mb-3">
+            <label><i class="fas fa-project-diagram me-1"></i>Project</label>
+            <select class="form-control" formControlName="projectId">
+              <option *ngFor="let project of projects" [value]="project.project_id">{{ project.name }}</option>
+            </select>
+            <div *ngIf="editForm.get('projectId')?.invalid && editForm.get('projectId')?.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle me-1"></i>Project is required
             </div>
+          </div>
 
-            <div class="mb-3">
-              <label><i class="fas fa-tasks me-1"></i>Status</label>
-              <select class="form-control" formControlName="status">
-                <option value="OPEN">OPEN</option>
-                <option value="IN_PROGRESS">IN_PROGRESS</option>
-                <option value="RESOLVED">RESOLVED</option>
-                <option value="CLOSED">CLOSED</option>
-              </select>
-              <div *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched" class="text-danger">
-                <i class="fas fa-exclamation-circle me-1"></i>Status is required
-              </div>
+          <div class="mb-3">
+            <label><i class="fas fa-tasks me-1"></i>Status</label>
+            <select class="form-control" formControlName="status">
+              <option value="OPEN">OPEN</option>
+              <option value="IN_PROGRESS">IN_PROGRESS</option>
+              <option value="RESOLVED">RESOLVED</option>
+              <option value="CLOSED">CLOSED</option>
+            </select>
+            <div *ngIf="editForm.get('status')?.invalid && editForm.get('status')?.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle me-1"></i>Status is required
             </div>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" (click)="closeModal()">
-            <i class="fas fa-times me-1"></i>Cancel
-          </button>
-          <button class="btn btn-primary" [disabled]="editForm.invalid" (click)="updateTicket()">
-            <i class="fas fa-save me-1"></i>Save
-          </button>
-        </div>
+          </div>
+
+          <!-- Ajout du champ complexity -->
+          <div class="mb-3">
+            <label><i class="fas fa-brain me-1"></i>Complexity (1-10)</label>
+            <input type="number" class="form-control" formControlName="complexity" min="1" max="10" />
+            <div *ngIf="editForm.get('complexity')?.invalid && editForm.get('complexity')?.touched" class="text-danger">
+              <i class="fas fa-exclamation-circle me-1"></i>Must be between 1 and 10
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeModal()">
+          <i class="fas fa-times me-1"></i>Cancel
+        </button>
+        <button class="btn btn-primary" [disabled]="editForm.invalid" (click)="updateTicket()">
+          <i class="fas fa-save me-1"></i>Save
+        </button>
       </div>
     </div>
   </div>
-  <div class="modal-backdrop fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'"></div>
 </div>
+<div class="modal-backdrop fade" [class.show]="isEditModalOpen" [style.display]="isEditModalOpen ? 'block' : 'none'"></div>

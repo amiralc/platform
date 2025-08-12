@@ -13,6 +13,10 @@ export interface UserPerformanceResponse {
   onTimeCompletionRate: number;
   timeSpentPerProject: { [projectName: string]: number };
 }
+interface TeamProjectCount {
+  teamName: string;
+  projectCount: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +24,7 @@ export interface UserPerformanceResponse {
 export class StatisticsService {
   
 private baseUrl = 'http://localhost:8083/api/stats';
+private basete="http://localhost:8083/api/teams"
  constructor(private http: HttpClient) {}
 
   getAssignedTicketCounts(): Observable<any[]> {
@@ -85,6 +90,12 @@ private baseUrl = 'http://localhost:8083/api/stats';
     
     return throwError(() => new Error(errorMessage));
   }
+ 
+
+getProjectsPerTeam(): Observable<TeamProjectCount[]> {
+  return this.http.get<TeamProjectCount[]>(`${this.basete}/stats/projects-per-team`);
+}
+
 
 }
 

@@ -133,65 +133,90 @@
 
 <!-- Les modales restent inchangées -->
 <!-- Nouvelle Modal pour les Détails du Ticket -->
+<!-- Modal Overlay -->
 <div class="modal-overlay" *ngIf="isTicketModalOpen" (click)="closeTicketModal()"></div>
+
+<!-- Ticket Details Modal -->
 <div class="modal-content-wrapper ticket-modal" *ngIf="isTicketModalOpen">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-header">
-      <h3>{{selectedTicket.title || 'Ticket Details'}}</h3>
-      <button (click)="closeTicketModal()" class="close-btn">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
+  <div class="modal-content modern-ticket-modal" (click)="$event.stopPropagation()">
     
-    <div class="modal-body">
-      <div class="ticket-details">
-        <div class="detail-row">
-          <span class="detail-label">Description:</span>
-          <span class="detail-value">{{selectedTicket.description || 'No description available'}}</span>
-        </div>
-        
-        <div class="detail-row">
-          <span class="detail-label">Status:</span>
-          <span class="badge" [ngClass]="{
-            'bg-secondary': selectedTicket.status === 'OPEN',
-            'bg-primary': selectedTicket.status === 'IN_PROGRESS',
-            'bg-success': selectedTicket.status === 'RESOLVED',
-            'bg-danger': selectedTicket.status === 'CLOSED'
-          }">
-            {{selectedTicket.status || 'UNKNOWN'}}
-          </span>
-        </div>
-        
-        <div class="detail-row" *ngIf="selectedTicket.assignTo; else unassigned">
-          <span class="detail-label">Assigned to:</span>
-          <div class="user-info">
-            <img [src]="getUserPhoto(selectedTicket.assignTo)" 
-                 class="user-avatar"
-                 alt="User photo"
-                 >
-            <div class="user-details">
-              <div class="user-name">{{selectedTicket.assignTo.fullName || 'No name'}}</div>
-              <div class="user-email">{{selectedTicket.assignTo.email}}</div>
-            </div>
-          </div>
-        </div>
-        
-        <ng-template #unassigned>
-          <div class="detail-row">
-            <span class="detail-label">Assigned to:</span>
-            <span class="text-muted">Unassigned</span>
-          </div>
-        </ng-template>
+    <!-- Header -->
+    <div class="modal-header border-0 pb-0">
+      <div class="d-flex align-items-center justify-content-between w-100">
+        <h3 class="modal-title text-primary fw-bold mb-0">
+          <i class="fas fa-ticket-alt me-2"></i>
+          {{ selectedTicket.title || 'Ticket Details' }}
+        </h3>
+        <button (click)="closeTicketModal()" class="btn-close-custom">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
     </div>
-    
-    <div class="modal-footer">
-      <button type="button" class="btn btn-primary" (click)="closeTicketModal()">
-        Close
+
+    <!-- Body -->
+    <div class="modal-body">
+      
+      <!-- Description -->
+      <div class="ticket-section">
+        <label class="section-label">
+          <i class="fas fa-align-left me-1 text-secondary"></i>
+          Description
+        </label>
+        <p class="section-text">
+          {{ selectedTicket.description || 'No description available' }}
+        </p>
+      </div>
+
+      <!-- Status -->
+      <div class="ticket-section">
+        <label class="section-label">
+          <i class="fas fa-info-circle me-1 text-secondary"></i>
+          Status
+        </label>
+        <span class="badge status-badge" [ngClass]="{
+          'bg-secondary': selectedTicket.status === 'OPEN',
+          'bg-primary': selectedTicket.status === 'IN_PROGRESS',
+          'bg-success': selectedTicket.status === 'RESOLVED',
+          'bg-danger': selectedTicket.status === 'CLOSED'
+        }">
+          {{ selectedTicket.status || 'UNKNOWN' }}
+        </span>
+      </div>
+
+      <!-- Assigned To -->
+      <div class="ticket-section">
+        <label class="section-label">
+          <i class="fas fa-user me-1 text-secondary"></i>
+          Assigned To
+        </label>
+        <ng-container *ngIf="selectedTicket.assignTo; else unassigned">
+          <div class="d-flex align-items-center mt-2">
+            <img [src]="getUserPhoto(selectedTicket.assignTo)" 
+                 class="user-avatar-lg me-3"
+                 alt="User photo">
+            <div>
+              <div class="fw-semibold">{{ selectedTicket.assignTo.fullName || 'No name' }}</div>
+              <div class="text-muted small">{{ selectedTicket.assignTo.email }}</div>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #unassigned>
+          <p class="text-muted mt-2 fst-italic">Unassigned</p>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer border-0 pt-0">
+      <button type="button" class="btn btn-outline-secondary" (click)="closeTicketModal()">
+        <i class="fas fa-times-circle me-1"></i> Close
       </button>
     </div>
+
   </div>
 </div>
+
 
 
 <!-- Team Modal (Inchangé) -->

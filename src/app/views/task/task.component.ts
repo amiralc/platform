@@ -46,12 +46,13 @@ export class TaskComponent implements OnInit {
     });
 
     // Formulaire d'édition
-    this.editForm = this.fb.group({
-      title: ['', Validators.required],
-      description: ['', Validators.required],
-      projectId: [null, Validators.required],
-      status: ['', Validators.required],
-    });
+   this.editForm = this.fb.group({
+  title: ['', Validators.required],
+  description: ['', Validators.required],
+  projectId: [null, Validators.required],
+  status: ['', Validators.required],
+  complexity: [3, [Validators.required, Validators.min(1), Validators.max(10)]],  // <-- Ajouté ici
+});
   }
 
   ngOnInit(): void {
@@ -178,15 +179,16 @@ export class TaskComponent implements OnInit {
   }
 
   openEditModal(ticket: TicketJira): void {
-    this.isEditModalOpen = true;
-    this.editingTicketId = ticket.ticket_jira_id!;
-    this.editForm.patchValue({
-      title: ticket.title,
-      description: ticket.description,
-      projectId: ticket.project?.project_id,
-      status: ticket.status,
-    });
-  }
+  this.isEditModalOpen = true;
+  this.editingTicketId = ticket.ticket_jira_id!;
+  this.editForm.patchValue({
+    title: ticket.title,
+    description: ticket.description,
+    projectId: ticket.project?.project_id,
+    status: ticket.status,
+    complexity: ticket.complexity ?? 3,  // <-- Ajouté ici, valeur par défaut si null
+  });
+}
 
   closeModal(): void {
     this.isEditModalOpen = false;
@@ -216,19 +218,19 @@ export class TaskComponent implements OnInit {
     });
   }
 
-  updateTicket(): void {
-    if (this.editForm.invalid || this.editingTicketId === null) return;
+ updateTicket(): void {
+  if (this.editForm.invalid || this.editingTicketId === null) return;
 
-    const ticketData = this.editForm.value;
-    this.ticketService.updateTicket(this.editingTicketId, ticketData).subscribe({
-      next: () => {
-        this.loadTickets();
-        this.closeModal();
-        this.toastr.success('Ticket mis à jour');
-      },
-      error: () => this.toastr.error('Erreur lors de la mise à jour du ticket'),
-    });
-  }
+  const ticketData = this.editForm.value;
+  this.ticketService.updateTicket(this.editingTicketId, ticketData).subscribe({
+    next: () => {
+      this.loadTickets();
+      this.closeModal();
+      this.toastr.success('Ticket mis à jour');
+    },
+    error: () => this.toastr.error('Erreur lors de la mise à jour du ticket'),
+  });
+}
 
   deleteTicket(ticketId: number): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {

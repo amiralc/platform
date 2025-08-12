@@ -62,6 +62,8 @@ export class ByprojectComponent implements OnInit {
   complexityVsEstimate: any[] = [];
   showRawTimeData = false;
   timeTrackedChart?: Chart;
+   isLoading = false;
+  chart: any;
 
   constructor(
     private ticketService: TicketJiraService,
@@ -73,6 +75,7 @@ export class ByprojectComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadAllData();
+     this.loadComplexityStats();
     this.loadProjectsTicketStats();
     
     this.statsService.getAssignedTicketCounts().subscribe(data => this.assignedTicketCounts = data);
@@ -95,6 +98,93 @@ export class ByprojectComponent implements OnInit {
       this.createUsersPerTeamChart();
     });
   }
+  loadComplexityStats(): void {
+    this.isLoading = true;
+    this.ticketService.getTicketsByComplexity().subscribe({
+      next: (data) => {
+        this.createSimplifiedChart(data);
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur:', err);
+        this.isLoading = false;
+      },
+    });
+  }
+
+  createSimplifiedChart(fullData: any): void {
+    // Filter only the 3 desired categories
+    const filteredData = {
+      labels: ['Low complexity (1-3)', 'Medium complexity (4-7)', 'High complexity (8-10)'],
+      datasets: [{
+        label: 'Number of tickets',
+        data: [
+          fullData['Peu complexe (1-3)'],
+          fullData['Moyennement complexe (4-7)'],
+          fullData['Très complexe (8-10)']
+        ],
+        backgroundColor: [
+          '#4bc0c0', // Turquoise for Low complexity
+          '#36a2eb', // Blue for Medium complexity
+          '#ff6384'  // Red for High complexity
+        ],
+        borderColor: [
+          '#309d9d',
+          '#2d8fd6',
+          '#e04f6f'
+        ],
+        borderWidth: 1
+      }]
+    };
+
+    const ctx = document.getElementById('simplifiedChart') as HTMLCanvasElement;
+    
+    if (this.chart) this.chart.destroy();
+
+    this.chart = new Chart(ctx, {
+      type: 'bar',
+      data: filteredData,
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Ticket distribution by complexity',
+            font: {
+              size: 16
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: (context) => `${context.parsed.y} tickets`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            },
+            title: {
+              display: true,
+              text: 'Number of tickets'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Complexity level'
+            }
+          }
+        }
+      }
+    });
+  }
+
 
   loadTimeTrackedData(): void {
     this.statsService.getTimeTrackedPerUser().subscribe({
