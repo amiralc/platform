@@ -431,8 +431,14 @@ textarea.form-control {
 /* ================ */
 .modal-content-wrapper.create-project-modal,
 .modal-content-wrapper.edit-project-modal {
-  max-width: 600px;
+  top: 15%; 
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 400px;
   width: 90%;
+  z-index: 10001;
+  animation: slideDown 0.3s ease-out;
+  max-height: 70vh;
 }
 
 /* ================ */
@@ -703,4 +709,40 @@ textarea.form-control {
     padding: 3px 8px;
     font-size: 0.7rem;
   }
+
+  .modal-content-wrapper.delete-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 280px;  /* Largeur réduite */
+  z-index: 1050;
+  
+  .modal-content {
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    border: none;
+    padding: 0;
+  }
+  
+  .modal-title {
+    font-size: 0.95rem;
+    color: #212529;
+  }
+  
+  .btn-sm {
+    padding: 0.2rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 1040;
+}
 }

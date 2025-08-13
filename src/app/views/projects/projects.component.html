@@ -363,7 +363,7 @@
   </div>
 </div>
 
-<!-- Create Project Modal (Inchangé) -->
+<!-- Create Project Modal avec icônes -->
 <div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()"></div>
 <div class="modal-content-wrapper create-project-modal" *ngIf="isCreateModalOpen">
   <div class="modal-content" (click)="$event.stopPropagation()">
@@ -376,7 +376,9 @@
     <form (ngSubmit)="createProject()">
       <div class="modal-body">
         <div class="form-group">
-          <label for="projectName" class="form-label">Project Name</label>
+          <label for="projectName" class="form-label">
+            <i class="fas fa-tag"></i> Project Name
+          </label>
           <input
             type="text"
             id="projectName"
@@ -386,10 +388,14 @@
             class="form-control"
             placeholder="Enter project name"
           />
-          <div class="form-hint">Choose a descriptive name for your project</div>
+          <div class="form-hint">
+            <i class="fas fa-info-circle"></i> Choose a descriptive name for your project
+          </div>
         </div>
         <div class="form-group">
-          <label for="projectDescription" class="form-label">Description</label>
+          <label for="projectDescription" class="form-label">
+            <i class="fas fa-align-left"></i> Description
+          </label>
           <textarea
             id="projectDescription"
             [(ngModel)]="newProject.description"
@@ -399,7 +405,9 @@
             placeholder="Enter project description"
             rows="4"
           ></textarea>
-          <div class="form-hint">Describe the purpose and scope of the project</div>
+          <div class="form-hint">
+            <i class="fas fa-info-circle"></i> Describe the purpose and scope of the project
+          </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -407,10 +415,32 @@
           Cancel
         </button>
         <button type="submit" class="btn btn-primary">
-          <i class="fas fa-plus-circle"></i> Create Project
+          <i class="fas fa-plus"></i> Create Project
         </button>
       </div>
     </form>
+  </div>
+</div>
+<!-- Delete Confirmation Modal -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()"></div>
+<div class="modal-content-wrapper delete-modal" *ngIf="isDeleteModalOpen">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-body text-center p-4">
+      <div class="modal-icon mb-3">
+        <i class="fas fa-exclamation-circle text-warning"></i>
+      </div>
+      <h5 class="modal-title mb-2">Confirm Deletion</h5>
+      <p class="text-muted small mb-3">Are you sure you want to delete this project? This action cannot be undone.</p>
+      
+      <div class="d-flex justify-content-center gap-2">
+        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeDeleteModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-sm btn-danger" (click)="deleteProject()">
+          Delete
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

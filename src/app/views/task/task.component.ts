@@ -27,6 +27,9 @@ export class TaskComponent implements OnInit {
   isCreateModalOpen = false;
   isEditModalOpen = false;
   editingTicketId: number | null = null;
+  isDeleteModalOpen = false;
+ticketToDelete: number | null = null;
+ 
 
   constructor(
     private fb: FormBuilder,
@@ -247,4 +250,13 @@ export class TaskComponent implements OnInit {
   trackByTicketId(index: number, ticket: TicketJira): number {
     return ticket.ticket_jira_id!;
   }
+   closeDeleteModal(): void {
+    this.isDeleteModalOpen = false;
+    this.ticketToDelete = null;
+  }
+  confirmDelete(ticketId: number): void {
+    this.ticketToDelete = ticketId;
+    this.isDeleteModalOpen = true;
+  }
+  
 }

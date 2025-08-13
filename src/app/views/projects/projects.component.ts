@@ -47,6 +47,8 @@ selectedTicket: Ticket = {
   isAddMemberModalOpen = false;
   availableUsers: User[] = [];
   selectedUserId: number | null = null;
+  isDeleteModalOpen = false;
+projectToDelete: number | null = null;
 
   constructor(
     private projectService: ProjectService,
@@ -206,17 +208,7 @@ selectedTicket: Ticket = {
     });
   }
 
-  confirmDelete(projectId: number): void {
-    if (confirm('Are you sure you want to delete this project?')) {
-      this.projectService.deleteProject(projectId).subscribe({
-        next: () => {
-          this.toastr.warning('Project deleted', 'Deleted');
-          this.loadProjects();
-        },
-        error: (err) => this.showError('Failed to delete project', err)
-      });
-    }
-  }
+ 
 
   viewTeam(project: Project): void {
     this.selectedProject = project;
@@ -368,5 +360,29 @@ getUserPhoto(user: any): string {
   }
   
   return 'assets/images/default-avatar.png';
+}
+
+confirmDelete(projectId: number): void {
+  this.projectToDelete = projectId;
+  this.isDeleteModalOpen = true;
+}
+closeDeleteModal(): void {
+  this.isDeleteModalOpen = false;
+  this.projectToDelete = null;
+}
+deleteProject(): void {
+  if (this.projectToDelete) {
+    this.projectService.deleteProject(this.projectToDelete).subscribe({
+      next: () => {
+        this.toastr.warning('Project deleted', 'Deleted');
+        this.loadProjects();
+        this.closeDeleteModal();
+      },
+      error: (err) => {
+        this.showError('Failed to delete project', err);
+        this.closeDeleteModal();
+      }
+    });
+  }
 }
 }
