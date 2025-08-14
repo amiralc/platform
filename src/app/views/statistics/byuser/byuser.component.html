@@ -1,70 +1,135 @@
 <div class="container-fluid px-3 px-md-4 py-4 dashboard-container">
   <h2 class="mb-4 fw-bold text-primary text-center text-md-start">Dashboard</h2>
 
-  <div class="row mt-4 g-4">
-             
-   <input type="number" [(ngModel)]="selectedUserId" (keyup.enter)="onLoadClick()" placeholder="Id utilisateur" />
+  <!-- Compact User Performance Section -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-sm rounded-4 border-0 mb-3"> <!-- Added mb-3 for spacing -->
+        <div class="card-header bg-info text-white rounded-top-4 py-2 px-3 d-flex justify-content-between align-items-center">
+          <h6 class="mb-0">User Performance</h6>
+          <button class="btn btn-sm btn-light" (click)="toggleChartType()" [disabled]="!userPerformance" title="Change chart type">
+            <i class="fas fa-chart-{{ currentChartType === 'bar' ? 'line' : 'bar' }}"></i>
+          </button>
+        </div>
+        
+        <div class="card-body p-3">
+          <!-- Compact Selector -->
+          <div class="row g-2 mb-3">
+            <div class="col-md-8">
+              <select class="form-select form-select-sm" [(ngModel)]="selectedUserId" (change)="onLoadClick()">
+                <option [ngValue]="null" disabled selected>Select a user...</option>
+                <option *ngFor="let user of availableUsers" [ngValue]="user.id">
+                  {{ user.fullName || user.email }} <small *ngIf="user.position">({{ user.position }})</small>
+                </option>
+              </select>
+            </div>
+            <div class="col-md-4">
+              <button class="btn btn-primary btn-sm w-100" (click)="onLoadClick()" [disabled]="!selectedUserId || isLoadingPerformance">
+                <span *ngIf="!isLoadingPerformance">
+                  <i class="fas fa-chart-line me-1"></i>Show
+                </span>
+                <span *ngIf="isLoadingPerformance">
+                  <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                </span>
+              </button>
+            </div>
+          </div>
 
-<button class="btn btn-primary" (click)="onLoadClick()">Charger performance</button>
+          <!-- Compact Messages -->
+          <div *ngIf="performanceError" class="alert alert-danger alert-dismissible py-2 mb-3">
+            <small>{{ performanceError }}</small>
+            <button type="button" class="btn-close" (click)="performanceError = ''"></button>
+          </div>
 
-<div *ngIf="isLoadingPerformance">Chargement...</div>
-<div *ngIf="performanceError" class="text-danger">{{ performanceError }}</div>
+          <!-- Main Compact Chart -->
+          <div *ngIf="userPerformance" class="position-relative mb-3">
+            <div class="chart-container" style="position: relative; height: 200px;">
+              <canvas id="userPerformanceChart"></canvas>
+            </div>
+            <div *ngIf="isLoadingPerformance" class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75">
+              <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+            </div>
+          </div>
 
-<div *ngIf="userPerformance">
-  <p>Tâches terminées : {{ userPerformance.completedTasks }}</p>
-  <p>Tâches en cours : {{ userPerformance.inProgressTasks }}</p>
-  <p>Tâches ouvertes : {{ userPerformance.openTasks }}</p>
-  <p>Temps moyen par tâche : {{ userPerformance.avgTimePerTask }}</p>
-  <p>Taux respect délai : {{ userPerformance.onTimeCompletionRate }}%</p>
+          <!-- Inline Mini Stats -->
+          <div *ngIf="userPerformance" class="row g-2 mb-3">
+            <div class="col-4">
+              <div class="p-2 bg-light rounded text-center">
+                <small class="d-block text-muted">Completed</small>
+                <strong class="text-success">{{ userPerformance.completedTasks }}</strong>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="p-2 bg-light rounded text-center">
+                <small class="d-block text-muted">Avg Time</small>
+                <strong class="text-primary">{{ userPerformance.avgTimePerTask | number:'1.0-1' }}h</strong>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="p-2 bg-light rounded text-center">
+                <small class="d-block text-muted">On Time</small>
+                <strong class="text-info">{{ userPerformance.onTimeCompletionRate }}%</strong>
+              </div>
+            </div>
+          </div>
 
-  <canvas id="userPerformanceChart" width="400" height="200"></canvas>
-</div>
+          <!-- Secondary Compact Chart -->
+          <div *ngIf="userPerformance?.timeSpentPerProject" class="mt-2">
+            <h6 class="text-center mb-2">Time by Project</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-
-    <!-- Other Cards (unchanged structure) -->
+  <!-- Other sections with reduced spacing -->
+  <div class="row g-3"> <!-- Removed mt-3 -->
+    <!-- Time Tracked by User -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-dark text-white rounded-top-4 py-2 px-3">
           <h6 class="mb-0">Time Tracked by User</h6>
         </div>
-        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="timeTrackedChart"></canvas>
         </div>
       </div>
     </div>
 
+    <!-- Users by Team -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header text-white rounded-top-4 py-2 px-3" style="background-color: #20c997;">
           <h6 class="mb-0">Users by Team</h6>
         </div>
-        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="usersPerTeamChart"></canvas>
         </div>
       </div>
     </div>
 
+    <!-- Ticket Assignment -->
     <div class="col-12 col-lg-6">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-warning text-dark rounded-top-4 py-2 px-3">
           <h6 class="mb-0">Ticket Assignment</h6>
         </div>
-        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
-          <canvas id="assignmentChart" style="max-height: 160px;"></canvas>
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 180px;">
+          <canvas id="assignmentChart"></canvas>
         </div>
       </div>
     </div>
 
+    <!-- Tickets by Project -->
     <div class="col-12 col-lg-6" *ngIf="projectsChart">
       <div class="card shadow-sm rounded-4 border-0 h-100">
         <div class="card-header bg-secondary text-white rounded-top-4 py-2 px-3">
           <h6 class="mb-0">Tickets by Project</h6>
         </div>
-        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 220px;">
+        <div class="card-body d-flex justify-content-center align-items-center p-2" style="height: 200px;">
           <canvas id="projectsChart"></canvas>
         </div>
       </div>
     </div>
-
-
+  </div>
 </div>

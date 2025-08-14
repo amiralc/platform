@@ -12,6 +12,7 @@
   z-index: 1040;
 }
 
+
 .modal-content-wrapper {
   position: fixed;
   top: 50%;
@@ -133,8 +134,6 @@ textarea:focus {
   background: #f8fafc;
   border-color: #cbd5e0;
 }
-
-
 .btn-primary {
   background-color: #4299e1;
   color: white;
@@ -143,6 +142,7 @@ textarea:focus {
 .btn-primary:hover {
   background-color: #3182ce;
 }
+
 .btn-primary:disabled {
   background-color: #bee3f8;
   cursor: not-allowed;

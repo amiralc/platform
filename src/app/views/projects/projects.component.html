@@ -137,7 +137,7 @@
 <div class="modal-overlay" *ngIf="isTicketModalOpen" (click)="closeTicketModal()"></div>
 
 <!-- Ticket Details Modal -->
-<div class="modal-content-wrapper ticket-modal" *ngIf="isTicketModalOpen">
+<div class="modal-content-wrapper ticket-modal" *ngIf="isTicketModalOpen"  style="width: 500px; max-width: 90%;">
   <div class="modal-content modern-ticket-modal" (click)="$event.stopPropagation()">
     
     <!-- Header -->
@@ -147,9 +147,7 @@
           <i class="fas fa-ticket-alt me-2"></i>
           {{ selectedTicket.title || 'Ticket Details' }}
         </h3>
-        <button (click)="closeTicketModal()" class="btn-close-custom">
-          <i class="fas fa-times"></i>
-        </button>
+      
       </div>
     </div>
 

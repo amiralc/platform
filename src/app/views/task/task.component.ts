@@ -234,18 +234,21 @@ ticketToDelete: number | null = null;
     error: () => this.toastr.error('Erreur lors de la mise à jour du ticket'),
   });
 }
-
-  deleteTicket(ticketId: number): void {
-    if (confirm('Êtes-vous sûr de vouloir supprimer ce ticket ?')) {
-      this.ticketService.deleteTicket(ticketId).subscribe({
-        next: () => {
-          this.loadTickets();
-          this.toastr.success('Ticket supprimé');
-        },
-        error: () => this.toastr.error('Erreur lors de la suppression du ticket'),
-      });
-    }
+deleteTicket(): void {
+  if (this.ticketToDelete) {
+    this.ticketService.deleteTicket(this.ticketToDelete).subscribe({
+      next: () => {
+        this.loadTickets();
+        this.closeDeleteModal();
+        this.toastr.success('Ticket supprimé');
+      },
+      error: () => {
+        this.closeDeleteModal();
+        this.toastr.error('Erreur lors de la suppression du ticket');
+      },
+    });
   }
+}
 
   trackByTicketId(index: number, ticket: TicketJira): number {
     return ticket.ticket_jira_id!;
@@ -258,5 +261,38 @@ ticketToDelete: number | null = null;
     this.ticketToDelete = ticketId;
     this.isDeleteModalOpen = true;
   }
+  getTicketToDeleteTitle(): string {
+  if (!this.ticketToDelete) return '';
+  const ticket = this.tickets.find(t => t.ticket_jira_id === this.ticketToDelete);
+  return ticket?.title || '';
+}
+
+getTicketToDeleteDescription(): string {
+  if (!this.ticketToDelete) return '';
+  const ticket = this.tickets.find(t => t.ticket_jira_id === this.ticketToDelete);
+  return ticket?.description || '';
+}
+getTicketToDeleteComplexity(): number {
+  if (!this.ticketToDelete) return 0;
+  const ticket = this.tickets.find(t => t.ticket_jira_id === this.ticketToDelete);
+  return ticket?.complexity || 0;
+}
+getTicketToDeleteAssignee(): string {
+  if (!this.ticketToDelete) return 'Non assigné';
+  const ticket = this.tickets.find(t => t.ticket_jira_id === this.ticketToDelete);
+  
+  if (ticket?.assignTo) {
+    return `${ticket.assignTo.firstname} ${ticket.assignTo.lastname}`;
+  }
+  
+  if (ticket?.assignToId) {
+    const user = this.users.find(u => u.user_id === ticket.assignToId);
+    if (user) {
+      return `${user.firstname} ${user.lastname}`;
+    }
+  }
+  
+  return 'Non assigné';
+}
   
 }

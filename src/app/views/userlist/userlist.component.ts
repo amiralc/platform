@@ -19,6 +19,8 @@ export class UserlistComponent implements OnInit {
    currentPage: number = 1;
   itemsPerPage: number = 10;
   totalItems: number = 0;
+  isDeleteModalOpen = false;
+  userToDelete: User | null = null;
   constructor(private userService: UserService) {}
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class UserlistComponent implements OnInit {
   loadUsers(): void {
   this.userService.getUsers().subscribe({
     next: (users) => {
-      console.log('Users data received:', users); // Ajoutez ce log
+      console.log('Users data received:', users); 
       this.users = users;
       this.totalItems = users.length;
       this.refreshPaginatedData();
@@ -79,7 +81,6 @@ export class UserlistComponent implements OnInit {
     }
   }
 
-  // Méthode utilitaire pour créer un utilisateur vide
   private createEmptyUser(): User {
     return {
       user_id: 0,
@@ -101,23 +102,23 @@ export class UserlistComponent implements OnInit {
 
   openEditModal(user: User): void {
     this.isCreating = false;
-    this.selectedUser = { ...user }; // copie pour éviter mutation directe
+    this.selectedUser = { ...user }; 
     this.isModalOpen = true;
   }
 
   closeModal(): void {
     this.isModalOpen = false;
-    this.selectedUser = this.createEmptyUser(); // Réinitialiser l'objet pour éviter null
+    this.selectedUser = this.createEmptyUser(); 
   }
 
   createUser(): void {
   if (!this.selectedUser) return;
   
-  console.log('Data being sent to API:', this.selectedUser); // Ajoutez ce log
+  console.log('Data being sent to API:', this.selectedUser);
   
   this.userService.createUser(this.selectedUser).subscribe({
     next: (createdUser) => {
-      console.log('User created successfully:', createdUser); // Ajoutez ce log
+      console.log('User created successfully:', createdUser); 
       this.loadUsers();
       this.closeModal();
     },
@@ -145,9 +146,27 @@ export class UserlistComponent implements OnInit {
   }
 
   confirmDelete(user: User): void {
-    const confirmed = window.confirm(`Are you sure you want to delete ${user.firstname} ${user.lastname}?`);
-    if (confirmed) {
-      this.deleteUser(user.user_id);
+    this.userToDelete = user;
+    this.isDeleteModalOpen = true;
+  }
+    deleteUserConfirmed(): void {
+    if (this.userToDelete) {
+      this.userService.deleteUser(this.userToDelete.user_id).subscribe({
+        next: () => {
+          this.loadUsers();
+          this.closeDeleteModal();
+        },
+        error: (err) => {
+          console.error('Failed to delete user', err);
+          this.closeDeleteModal();
+        }
+      });
     }
   }
+   closeDeleteModal(): void {
+    this.isDeleteModalOpen = false;
+    this.userToDelete = null;
+  }
+   
+   
 }

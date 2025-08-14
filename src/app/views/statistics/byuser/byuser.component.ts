@@ -9,6 +9,7 @@ import { StatisticsService,UserPerformanceResponse } from '../../../services/sta
 import { ChangeDetectorRef } from '@angular/core';
 import { finalize } from 'rxjs/operators';
 import { ChartType } from 'chart.js';
+import { UserService } from '../../../services/user.service';
 
 
 interface StatusStat {
@@ -35,6 +36,13 @@ interface ApiAssignmentStat {
   userId: number;
   userName: string;
   ticketCount: number;
+}
+interface AvailableUser {
+  id: number;
+  fullName: string;
+  email: string;
+  position?: string;
+  phone?: string;
 }
 
 @Component({
@@ -67,6 +75,7 @@ export class ByuserComponent implements OnInit {
   complexityVsEstimate: any[] = [];
   showRawTimeData = false;
   timeTrackedChart?: Chart;
+  availableUsers: any[] = [];
   
   // Partie Performance Utilisateur
   selectedUserId?: number;
@@ -74,12 +83,13 @@ export class ByuserComponent implements OnInit {
   performanceError?: string;
   isLoadingPerformance = false;
   userPerformanceChart?: Chart;
-  availableUsers: any[] = []; // Remplissez ce tableau avec vos utilisateurs
+
 currentChartType: ChartType = 'bar';
-  
+ 
 
  constructor(
     private ticketService: TicketJiraService,
+     private userService: UserService,
     private projectService: ProjectService,
     private cdr: ChangeDetectorRef,
     private statsService: StatisticsService
@@ -91,6 +101,8 @@ currentChartType: ChartType = 'bar';
     console.log("Initializing ByUser component");
     
     this.loadAllData();
+     this.loadAvailableUsers();
+    
     this.loadProjectsTicketStats();
     
     this.statsService.getAssignedTicketCounts().subscribe(data => this.assignedTicketCounts = data);
@@ -136,6 +148,23 @@ currentChartType: ChartType = 'bar';
       }
     });
 }
+loadAvailableUsers(): void {
+    this.userService.getAvailableUsers().subscribe({
+      next: (users) => {
+        this.availableUsers = users.map(user => ({
+          id: user.id,
+          fullName: user.fullName,
+          email: user.email,
+          position: user.position,
+          phone: user.phone
+        }));
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des utilisateurs', err);
+        // Vous pouvez ajouter un message d'erreur à l'utilisateur ici
+      }
+    });
+  }
 
 
   // Méthodes utilitaires

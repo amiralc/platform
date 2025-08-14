@@ -12,6 +12,13 @@ export interface User {
   enabled: boolean;
    password?: string;
 }
+interface UserDto {
+  id: number;
+  fullName: string;
+  email: string;
+  position?: string;
+  phone?: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +43,9 @@ createUser(user: User): Observable<User> {
 }
  getCurrentUser(): Observable<User> {
     return this.http.get<User>(`${this.apiUrl}/me`);
+  }
+    getAvailableUsers(): Observable<UserDto[]> {
+    return this.http.get<UserDto[]>(`${this.apiUrl}/available`);
   }
 
 }
