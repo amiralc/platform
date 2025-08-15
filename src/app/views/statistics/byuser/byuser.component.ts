@@ -83,9 +83,11 @@ export class ByuserComponent implements OnInit {
   performanceError?: string;
   isLoadingPerformance = false;
   userPerformanceChart?: Chart;
+  showPerformanceChart = true;
+ 
 
 currentChartType: ChartType = 'bar';
- 
+
 
  constructor(
     private ticketService: TicketJiraService,
@@ -932,6 +934,9 @@ onLoadClick(): void {
   toggleChartType(): void {
   this.currentChartType = this.currentChartType === 'bar' ? 'line' : 'bar';
   this.createUserPerformanceChart(); // Re-crée le graphique
+}
+togglePerformanceChart(): void {
+  this.showPerformanceChart = !this.showPerformanceChart;
 }
 
 }
