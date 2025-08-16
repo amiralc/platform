@@ -12,7 +12,7 @@ import { UserService, User } from '../../services/user.service';
 })
 export class UserlistComponent implements OnInit {
   users: User[] = [];
-   paginatedUsers: User[] = [];
+   paginatedUsers: any[] = [];
   selectedUser: User = this.createEmptyUser();
   isModalOpen = false;
   isCreating = false;

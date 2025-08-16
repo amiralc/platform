@@ -34,7 +34,19 @@
                 <td>{{ user.lastname || 'No lastname' }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.phone }}</td>
-                <td>{{ user.role }}</td>
+                <td>
+                  <ng-container *ngIf="user.roles?.length > 0; else noRole">
+                    <span *ngFor="let role of user.roles"
+                          class="badge me-1"
+                          [ngClass]="role.name === 'MANAGER' ? 'bg-primary' : 'bg-success'">
+                      {{ role.name }}
+                    </span>
+                  </ng-container>
+                  <ng-template #noRole>
+                    <span class="text-muted">No role</span>
+                  </ng-template>
+                </td>
+
                 <td>
                   <button type="button" class="btn btn-sm btn-warning me-2" (click)="openEditModal(user)" title="Edit">
                     <i class="fas fa-edit"></i>
