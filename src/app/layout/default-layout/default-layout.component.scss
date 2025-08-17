@@ -13,22 +13,17 @@
     min-height: 100%;
   }
 
-  //.sidebar-nav {
-  //  scrollbar-color: var(--cui-gray-500, #444) transparent;
-  //}
-}
+  .sidebar-brand-full,
+  .sidebar-brand-narrow {
+    background-color: #fff;         
+    border-radius: 6px;             
+    padding: 4px 6px;               
+    filter: brightness(1.15);      
+    transition: transform 0.2s ease, filter 0.2s ease;
 
-// ng-scrollbar css variables
-//.cui-scrollbar {
-//  --scrollbar-border-radius: 7px;
-//  --scrollbar-padding: 1px;
-//  --scrollbar-viewport-margin: 0;
-//  --scrollbar-track-color: transparent;
-//  --scrollbar-wrapper-color: transparent;
-//  --scrollbar-thumb-color: rgba(0, 0, 0, 0.2);
-//  --scrollbar-thumb-hover-color: var(--scrollbar-thumb-color);
-//  --scrollbar-size: 5px;
-//  --scrollbar-hover-size: var(--scrollbar-size);
-//  --scrollbar-thumb-transition: height ease-out 150ms, width ease-out 150ms;
-//  --scrollbar-track-transition: height ease-out 150ms, width ease-out 150ms;
-//}
+    &:hover {
+      transform: scale(1.05);     
+      filter: brightness(1.3);     
+    }
+  }
+}

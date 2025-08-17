@@ -167,11 +167,11 @@
 
       <!-- Status -->
       <div class="ticket-section">
-        <label class="section-label">
+        <label class="section-label" style="margin-right: 10px; ">
           <i class="fas fa-info-circle me-1 text-secondary"></i>
           Status
         </label>
-        <span class="badge status-badge" [ngClass]="{
+        <span class="badge" [ngClass]="{
           'bg-secondary': selectedTicket.status === 'OPEN',
           'bg-primary': selectedTicket.status === 'IN_PROGRESS',
           'bg-success': selectedTicket.status === 'RESOLVED',
@@ -182,26 +182,30 @@
       </div>
 
       <!-- Assigned To -->
-      <div class="ticket-section">
-        <label class="section-label">
+     <div class="ticket-section">
+        <label class="section-label" style="font-size: 14px; font-weight: 600; color: #555;">
           <i class="fas fa-user me-1 text-secondary"></i>
           Assigned To
         </label>
+
         <ng-container *ngIf="selectedTicket.assignTo; else unassigned">
           <div class="d-flex align-items-center mt-2">
             <img [src]="getUserPhoto(selectedTicket.assignTo)" 
-                 class="user-avatar-lg me-3"
-                 alt="User photo">
+                class="rounded-circle me-2"
+                alt="User photo"
+                style="width: 40px; height: 40px; object-fit: cover;">
             <div>
-              <div class="fw-semibold">{{ selectedTicket.assignTo.fullName || 'No name' }}</div>
-              <div class="text-muted small">{{ selectedTicket.assignTo.email }}</div>
+              <span class="fw-semibold">{{ selectedTicket.assignTo.email }}</span>
+              
             </div>
           </div>
         </ng-container>
+
         <ng-template #unassigned>
           <p class="text-muted mt-2 fst-italic">Unassigned</p>
         </ng-template>
       </div>
+
 
     </div>
 
@@ -421,26 +425,31 @@
 </div>
 <!-- Delete Confirmation Modal -->
 <div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()"></div>
-<div class="modal-content-wrapper delete-modal" *ngIf="isDeleteModalOpen">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <div class="modal-body text-center p-4">
-      <div class="modal-icon mb-3">
-        <i class="fas fa-exclamation-circle text-warning"></i>
+
+
+
+
+<div class="modal fade" [class.show]="isDeleteModalOpen" [style.display]="isDeleteModalOpen ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header border-0 text-center d-block">
+        <!-- Point d'exclamation jaune centré -->
+        <div class="exclamation-mark-circle mx-auto mb-3">
+          <i class="fas fa-exclamation"></i>
+        </div>
+        <h5 class="modal-title w-100">Confirm Deletion</h5>
       </div>
-      <h5 class="modal-title mb-2">Confirm Deletion</h5>
-      <p class="text-muted small mb-3">Are you sure you want to delete this project? This action cannot be undone.</p>
-      
-      <div class="d-flex justify-content-center gap-2">
-        <button type="button" class="btn btn-sm btn-outline-secondary" (click)="closeDeleteModal()">
-          Cancel
-        </button>
-        <button type="button" class="btn btn-sm btn-danger" (click)="deleteProject()">
-          Delete
-        </button>
+      <div class="modal-body text-center">
+         <p class="text-muted small mb-3">Are you sure you want to delete this project? This action cannot be undone.</p>
+        <div class="d-flex justify-content-center gap-3">
+          <button class="btn btn-outline-secondary px-4" (click)="closeDeleteModal()">Cancel</button>
+          <button class="btn btn-danger px-4" (click)="deleteProject()">Delete</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+<div class="modal-backdrop fade" [class.show]="isDeleteModalOpen" [style.display]="isDeleteModalOpen ? 'block' : 'none'"></div>
 
 <!-- Edit Project Modal (Inchangé) -->
 <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()"></div>

@@ -345,6 +345,7 @@ projectToDelete: number | null = null;
       photoUrl: ticket.assignTo.photoUrl
     } : undefined
   };
+  console.log('display the ticket selected  data ',this.selectedTicket)
   this.isTicketModalOpen = true;
 }
 closeTicketModal(): void {
@@ -352,15 +353,14 @@ closeTicketModal(): void {
 }
 
 getUserPhoto(user: any): string {
-  if (!user) return 'assets/images/default-avatar.png';
-  
-  // Si photoUrl existe et n'est pas vide
-  if (user.photoUrl && user.photoUrl.trim() !== '') {
-    return user.photoUrl + '?t=' + Date.now(); // Ajout timestamp pour éviter cache
+
+  if (!user || !user.photoUrl || user.photoUrl.trim() === '') {
+    return 'assets/images/avatars/avatardefault.png';
   }
-  
-  return 'assets/images/default-avatar.png';
+
+  return `${user.photoUrl}?t=${Date.now()}`;
 }
+
 
 confirmDelete(projectId: number): void {
   this.projectToDelete = projectId;

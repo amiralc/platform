@@ -78,7 +78,7 @@ export class ByuserComponent implements OnInit {
   availableUsers: any[] = [];
   
   // Partie Performance Utilisateur
-  selectedUserId?: number;
+selectedUserId: number | null = null;
   userPerformance?: UserPerformanceResponse;
   performanceError?: string;
   isLoadingPerformance = false;
@@ -314,7 +314,7 @@ private createProjectTimeChart(): void {
       }
     }
   });
-}
+} 
 onLoadClick(): void {
   if (this.selectedUserId) {
     this.loadUserPerformance(this.selectedUserId);
@@ -933,10 +933,22 @@ onLoadClick(): void {
   }
   toggleChartType(): void {
   this.currentChartType = this.currentChartType === 'bar' ? 'line' : 'bar';
-  this.createUserPerformanceChart(); // Re-crée le graphique
+  this.createUserPerformanceChart();
+  }
+  resetUserSelection(): void {
+  this.selectedUserId = null;
+  this.userPerformance = undefined;
+  this.performanceError = '';
+  if (this.userPerformanceChart) {
+    this.userPerformanceChart.destroy();
+    this.userPerformanceChart = undefined;
+  }
 }
-togglePerformanceChart(): void {
+ togglePerformanceChart(): void {
   this.showPerformanceChart = !this.showPerformanceChart;
+  if (!this.showPerformanceChart) {
+    this.resetUserSelection();
+  }
 }
 
 }
